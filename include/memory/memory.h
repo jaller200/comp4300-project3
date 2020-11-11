@@ -26,7 +26,7 @@ private:
     // MARK: -- Private Variables
 
     // Memory
-    std::vector<uint8_t> m_vecMemory;       // The main memory
+    std::vector<byte_t> m_vecMemory;       // The main memory
 
     // Segment Sizes
     size_t m_szDataSegment;                 // The data segment size (in bytes)
@@ -41,7 +41,7 @@ private:
      * @param addr The address to convert
      * @return The offset into the array, or -1 for an invalid address
      */
-    std::vector<uint8_t>::size_type addressToOffset(addr_t addr) const;
+    std::vector<byte_t>::size_type addressToOffset(addr_t addr) const;
 
 public:
 
@@ -61,10 +61,26 @@ public:
     bool readByte(addr_t addr, byte_t& data) const;
 
     /**
+     * Reads a word at an address.
+     * @param addr The address to read from
+     * @param data A placeholder to read into
+     * @return Whether or not the read was successful
+     */
+    bool readWord(addr_t addr, word_t& data) const;
+
+    /**
      * Writes a byte to an address.
      * @param addr The address to write to
      * @param data The data to write
      * @return Whether or not the write was successful
      */
     bool writeByte(addr_t addr, byte_t data);
+
+    /**
+     * Writes a word to an address.
+     * @param addr The address to write to
+     * @param data The data to write
+     * @return Whether or not the write was successful
+     */
+    bool writeWord(addr_t addr, word_t data);
 };

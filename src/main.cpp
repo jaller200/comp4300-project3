@@ -15,13 +15,20 @@ int main(int argc, char ** argv) {
     std::unique_ptr<Memory> memory(new Memory(0x1000, 0x1000));
 
     // Get the memory
-    byte_t data;
-    memory->readByte(0x1000, data);
-    std::cout << "Byte (before): " << (int) data << std::endl;
+    word_t word;
+    memory->readWord(0x1000, word);
+    std::cout << "Word (before): " << std::hex << "0x" << (int) word << std::dec << std::endl;
 
-    memory->writeByte(0x1000, 1);
-    memory->readByte(0x1000, data);
-    std::cout << "Byte (after): " << (int) data << std::endl;
+    byte_t byte;
+    memory->readByte(0x1000, byte);
+    std::cout << "Byte (before): " << std::hex << "0x" << (int) byte << std::dec << std::endl;
+
+    memory->writeWord(0x1000, 0x12345678);
+    memory->readWord(0x1000, word);
+    std::cout << "Word (after): " << std::hex << "0x" << (int) word << std::dec << std::endl;
+
+    memory->readByte(0x1000, byte);
+    std::cout << "Byte (after): " << std::hex << "0x" << (int) byte << std::dec << std::endl;
 
     return 0;
 }
