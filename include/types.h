@@ -10,4 +10,5 @@ using word_t = uint32_t;
 using dword_t = uint64_t;
 
 // MARK: -- Text Data Types
+using char_t = char;
 using ascii_t = std::string;

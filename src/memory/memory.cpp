@@ -1,5 +1,7 @@
 #include "memory/memory.h"
 
+#include <iostream>
+
 // MARK: -- Construction
 
 // Constructor
@@ -22,6 +24,26 @@ bool Memory::readByte(addr_t addr, byte_t& byte) const {
     if (offset == -1) return false;
 
     byte = this->m_vecMemory[offset];
+    return true;
+}
+
+// Read a string from memory
+bool Memory::readString(addr_t addr, ascii_t& str) {
+
+    // Clear the string
+    str.clear();
+
+    // For a variable list string, we actually don't know the offset, so
+    // we need to constantly check. For now, assume an offset of 1
+    auto offset = this->addressToOffset(addr, sizeof(char_t));
+    if (offset == -1) return false;
+
+    // Now iterate through until we hit a null terminator or end of memory
+    while (offset < this->m_vecMemory.capacity() && this->m_vecMemory[offset] != '\0') {
+        str.push_back(this->m_vecMemory[offset]);
+        offset++;
+    }
+
     return true;
 }
 
@@ -48,6 +70,24 @@ bool Memory::writeByte(addr_t addr, byte_t byte) {
     if (offset == -1) return false;
 
     this->m_vecMemory[offset] = byte;
+    return true;
+}
+
+// Writes a string to memory
+bool Memory::writeString(addr_t addr, const ascii_t& str) {
+    
+    // Get the size of the string + the null terminator
+    size_t size = str.length() + 1;
+
+    // Now get the offset
+    auto offset = this->addressToOffset(addr, size);
+    if (offset == -1) return false;
+
+    // Otherwise, start at the offset and write each character
+    for (const char& c : str) {
+        this->m_vecMemory[offset++] = c;
+    }
+    this->m_vecMemory[offset] = '\0';
     return true;
 }
 

@@ -3,6 +3,8 @@
 #include "memory/memory.h"
 #include "types.h"
 
+#include <iostream>
+
 TEST_CASE("Memory can be written to and read from", "[memory]") {
 
     size_t dataSize = 0x2000;
@@ -15,6 +17,27 @@ TEST_CASE("Memory can be written to and read from", "[memory]") {
 
 
     // MARK: -- Byte Reads / Writes
+    /**
+     * Desired Confidence: boundary-value analysis
+     * 
+     * Valid Tests:
+     *      Read / write value at nominal address
+     *      Read / write value on low-boundary and high boundary - sizeof(byte_t)
+     * 
+     * Valid Outputs:
+     *      True for write, true for read and valid number
+     *      True for write, true for read and valid number
+     * 
+     * Invalid Tests:
+     *      Read value one under low-boundary or on high boundary
+     *      Read value under low-boundary and above high boundary
+     * 
+     *      Write value one under low-boundary or on high boundary
+     *      Write value under low-boundary and above high boundary
+     * 
+     * Invalid Outputs:
+     *      False for all function calls
+     */
     SECTION("writing and reading byte works properly") {
         
         byte_t byte;
@@ -63,6 +86,27 @@ TEST_CASE("Memory can be written to and read from", "[memory]") {
 
 
     // MARK: -- Word Reads / Writes
+    /**
+     * Desired Confidence: boundary-value analysis
+     * 
+     * Valid Tests:
+     *      Read / write value at nominal address
+     *      Read / write value on low-boundary and high boundary - sizeof(word_t)
+     * 
+     * Valid Outputs:
+     *      True for write, true for read and valid number
+     *      True for write, true for read and valid number
+     * 
+     * Invalid Tests:
+     *      Read value one under low-boundary or on high boundary - sizeof(word_t) + 1
+     *      Read value under low-boundary and above high boundary
+     * 
+     *      Write value one under low-boundary or on high boundary - sizeof(word_t) + 1
+     *      Write value under low-boundary and above high boundary
+     * 
+     * Invalid Outputs:
+     *      False for all function calls
+     */
     SECTION("writing and reading word works properly") {
         
         word_t word;
@@ -107,5 +151,93 @@ TEST_CASE("Memory can be written to and read from", "[memory]") {
         word_t word;
         REQUIRE(memory.readWord(0x2, word) == false);
         REQUIRE(memory.readWord(0x1000+textSize+dataSize+100, word) == false);
+    }
+
+
+    // MARK: -- String Read / Writes
+    /**
+     * Desired Confidence: boundary-value analysis
+     * 
+     * Valid Tests:
+     *      Write / read string at nominal address
+     *      Write / read string on low-boundary and high boundary - sizeof(str)
+     *      Write string at address and read it from starting address + 1.
+     * 
+     * Valid Outputs:
+     *      True for write, true for read and valid string
+     *      True for write, true for read and valid string
+     *      True for write, true for read and valid string w/ missing first character
+     * 
+     * Invalid Tests:
+     *      Write value starting one under low-boundary or on high boundary - sizeof(str) + 1
+     *      Write value starting under low-boundary and above high boundary
+     * 
+     *      Read value starting at one under low-boundary on on the high boundary
+     *      Read value starting under low-boundary and above high boundary
+     * 
+     * Invalid Outputs:
+     *      False for all function calls
+     */
+    SECTION("writing and reading strings works properly") {
+
+        ascii_t str;
+        REQUIRE(memory.writeString(0x1500, "test") == true);
+        
+        byte_t byte;
+        memory.readByte(0x1500, byte);
+        REQUIRE(byte == 't');
+        memory.readByte(0x1502, byte);
+        REQUIRE(byte == 's');
+        memory.readByte(0x1504, byte);
+        REQUIRE(byte == '\0');
+
+        REQUIRE(memory.readString(0x1500, str) == true);
+        REQUIRE(str == "test");
+    }
+
+    SECTION("writing and reading string on but within the byte boundaries succeeds") {
+
+        ascii_t str;
+        REQUIRE(memory.writeString(0x1000, "test") == true);
+        REQUIRE(memory.readString(0x1000, str) == true);
+        REQUIRE(str == "test");
+
+        REQUIRE(memory.writeString(0x1000+textSize+dataSize-5, "gary") == true);
+        REQUIRE(memory.readString(0x1000+textSize+dataSize-5, str) == true);
+        REQUIRE(str == "gary");
+    }
+
+    SECTION("writing string then reading partial string works properly") {
+
+        ascii_t str;
+        REQUIRE(memory.writeString(0x1300, "bobby") == true);
+        REQUIRE(memory.readString(0x1300+1, str) == true);
+        REQUIRE(str == "obby");
+    }
+
+    SECTION("writing string at the byte boundaries fails") {
+
+        REQUIRE(memory.writeString(0x1000-1, "test") == false);
+        REQUIRE(memory.writeString(0x1000+textSize+dataSize-4, "test") == false);
+    }
+
+    SECTION("writing string outside of byte boundaries fails") {
+        
+        REQUIRE(memory.writeString(0x2, "test") == false);
+        REQUIRE(memory.writeString(0x1000+textSize+dataSize+100, "test") == false);
+    }
+
+    SECTION("reading string at the byte boundaries fails") {
+
+        ascii_t str;
+        REQUIRE(memory.readString(0x1000-1, str) == false);
+        REQUIRE(memory.readString(0x1000+textSize+dataSize, str) == false);
+    }
+
+    SECTION("reading string outside of byte boundaries fails") {
+
+        ascii_t str;
+        REQUIRE(memory.readString(0x2, str) == false);
+        REQUIRE(memory.readString(0x1000+textSize+dataSize+100, str) == false);
     }
 }
