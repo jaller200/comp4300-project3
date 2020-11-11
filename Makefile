@@ -9,7 +9,8 @@ BIN_DIR := bin
 EXEC	:= $(BIN_DIR)/pipeSim
 
 # Source / Object Files
-SRC		:= $(wildcard src/*.cpp)
+SRC		:= $(wildcard src/*.cpp) \
+		   $(wildcard src/memory/*.cpp)
 OBJ		:= $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 
 # Compiler / Linker Flags
