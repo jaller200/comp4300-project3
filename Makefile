@@ -15,10 +15,13 @@ TEST_EXEC		:= $(TEST_BIN_DIR)/pipeSimTests
 
 # Source / Object Files
 PROJ_SRC		:= $(wildcard $(PROJ_SRC_DIR)/*.cpp) \
+					$(wildcard $(PROJ_SRC_DIR)/instr/*.cpp) \
 		   			$(wildcard $(PROJ_SRC_DIR)/memory/*.cpp)
 PROJ_OBJ		:= $(PROJ_SRC:%.cpp=$(PROJ_OBJ_DIR)/%.o)
 
 TEST_SRC		:= $(wildcard $(TEST_SRC_DIR)/*.cpp) \
+					$(wildcard $(PROJ_SRC_DIR)/instr/*.cpp) \
+					$(wildcard $(TEST_SRC_DIR)/instr/*.cpp) \
 					$(wildcard $(PROJ_SRC_DIR)/memory/*.cpp) \
 					$(wildcard $(TEST_SRC_DIR)/memory/*.cpp)
 TEST_OBJ		:= $(TEST_SRC:%.cpp=$(TEST_OBJ_DIR)/%.o)
