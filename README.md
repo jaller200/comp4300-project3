@@ -2,6 +2,8 @@
 PipeSim is a A MIPS-based modular simulator with pipelining, stalling, and forwarding implemented.
 
 ## Status
+Branch / Compiler | clang-5.0,  gcc-4.8.4, Xcode-9.1
+------------------| --------------------------------
 master | [![Build Status](https://travis-ci.com/jaller200/comp4300-project3.svg?token=4VsERWCxvrdVz6KFp1Zi&branch=master)](https://travis-ci.com/jaller200/comp4300-project3)
 develop | [![Build Status](https://travis-ci.com/jaller200/comp4300-project3.svg?token=4VsERWCxvrdVz6KFp1Zi&branch=dev)](https://travis-ci.com/jaller200/comp4300-project3)
 
