@@ -1,6 +1,10 @@
 # PipeSim | A MIPS-Based Pipelined Simulator
 PipeSim is a A MIPS-based modular simulator with pipelining, stalling, and forwarding implemented.
 
+## Status
+master | [![Build Status](https://travis-ci.com/jaller200/comp4300-project3.svg?token=4VsERWCxvrdVz6KFp1Zi&branch=master)](https://travis-ci.com/jaller200/comp4300-project3)
+develop | [![Build Status](https://travis-ci.com/jaller200/comp4300-project3.svg?token=4VsERWCxvrdVz6KFp1Zi&branch=dev)](https://travis-ci.com/jaller200/comp4300-project3)
+
 ## Overview
 This project is a continuation of the previous project that builds on it and adds pipelining stages to the GPR-based MIPS simulator.
 
@@ -16,6 +20,12 @@ More details to come later...
 
 ## Requirements
 **Compiler**: PipeSim requires C++11 and thus a compiler compatible with it. The program has been tested on the following compilers:
+
+* clang-5.0.0 on Ubuntu 14.04
+* g++-4.8.4 on Ubuntu 14.04
+* AppleClang-9.1.0 on macOS
+
+In addition, I have manually tested it on the following compilers (academic-related):
 
 * g++-4.8.5 on CentOS 7
 * Apple Clang 11.0.0 (clang-1100.0.33.17) on macOS Mojave
