@@ -1,7 +1,7 @@
 #include "tests/include/catch.hpp"
 
-#include "memory/memory.h"
-#include "types.h"
+#include "memory/memory.hpp"
+#include "types.hpp"
 
 #include <iostream>
 

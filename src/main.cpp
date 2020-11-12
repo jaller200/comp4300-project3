@@ -1,8 +1,8 @@
 #include <iostream>
 #include <memory>
 
-#include "memory/memory.h"
-#include "types.h"
+#include "memory/memory.hpp"
+#include "types.hpp"
 
 /**
  * The entry point to the program.
