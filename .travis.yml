@@ -1,0 +1,28 @@
+language: cpp
+
+os:
+  - linux
+  - osx
+
+dist: trusty
+
+compiler:
+  - clang
+  - gcc
+
+env:
+  # - CONFIG=Release
+  - CONFIG=Debug
+
+branches:
+  only:
+    - dev
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+
+script:
+  - make test
+  - make

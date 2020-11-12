@@ -10,6 +10,8 @@ My goals for the structure of this are three-fold:
 * **Modular** - _I want developers to find it flexible and adaptable for their needs_
 * **Testable** - _I want the code to be build with confidence through rigorous unit and integration testing_
 
+This project is currently implemented as a binary executable, although my plan is to move the bulk of it to a static library in the future.
+
 More details to come later...
 
 ## Requirements
