@@ -16,9 +16,8 @@ public:
     // Instructions
     using instr_t = word_t;         // A type holding an instruction
 
-protected:
 
-    // MARK: -- Private Constants
+    // MARK: -- Public Constants
 
     // Flags
     static constexpr word_t FLAG_OPCODE     = 0x3F;             // Bits 0-5 (6 bits)
@@ -40,6 +39,7 @@ protected:
     static constexpr word_t LIMIT_IMM       = 65535;            // 16 bits (2^16-1 = 65,535)
     static constexpr word_t LIMIT_ADDR      = 67108863;         // 26 bits (2^26-1 = 67,108,863)
 
+private:
 
     // MARK: -- Private Variables
 
