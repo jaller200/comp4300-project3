@@ -11,6 +11,5 @@ enum class InstructionType {
     J_FORMAT,       // Jump instructions
     
     // Other / Unknown Formats
-    NOP,            // NOP instruction (0x00000000)
     UNKNOWN,        // Unknown instructon (0xFFFFFFFF)
 };

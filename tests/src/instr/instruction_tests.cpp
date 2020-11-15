@@ -32,17 +32,20 @@ TEST_CASE("Instructions can be created and edited properly", "[instruction]") {
         instr.setImmediate(2);
         REQUIRE(instr.getImmediate() == 2);
 
-        instr.setRd(3);
-        REQUIRE(instr.getRd() == 3);
+        instr.setOpcode(3);
+        REQUIRE(instr.getOpcode() == 3);
 
-        instr.setRs(4);
-        REQUIRE(instr.getRs() == 4);
+        instr.setRd(4);
+        REQUIRE(instr.getRd() == 4);
 
-        instr.setRt(5);
-        REQUIRE(instr.getRt() == 5);
+        instr.setRs(5);
+        REQUIRE(instr.getRs() == 5);
 
-        instr.setShamt(6);
-        REQUIRE(instr.getShamt() == 6);
+        instr.setRt(6);
+        REQUIRE(instr.getRt() == 6);
+
+        instr.setShamt(7);
+        REQUIRE(instr.getShamt() == 7);
         
         instr.setType(InstructionType::I_FORMAT);
         REQUIRE(instr.getType() == InstructionType::I_FORMAT);
@@ -52,6 +55,7 @@ TEST_CASE("Instructions can be created and edited properly", "[instruction]") {
             instr.reset();
             REQUIRE(instr.getFunct() == 0);
             REQUIRE(instr.getImmediate() == 0);
+            REQUIRE(instr.getOpcode() == 0);
             REQUIRE(instr.getRd() == 0);
             REQUIRE(instr.getRs() == 0);
             REQUIRE(instr.getRt() == 0);

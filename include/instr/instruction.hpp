@@ -15,31 +15,54 @@ public:
 
     // Instructions
     using instr_t = word_t;         // A type holding an instruction
-    using funct_t = byte_t;         // A type holding a 6-bit function type
 
-    // Values
-    using imm_t = shword_t;         // A type holding a 16-bit signed immediate value
-    using reg_t = byte_t;           // A type holding a 5-bit register number (0-32)
-    using shamt_t = byte_t;         // A type holding a 5-bit shift amount (0-32)
+protected:
 
-private:
+    // MARK: -- Private Constants
+
+    // Flags
+    static constexpr word_t FLAG_OPCODE     = 0x3F;             // Bits 0-5 (6 bits)
+    static constexpr word_t FLAG_RS         = 0x7C0;            // Bits 6-11 (5 bits)
+    static constexpr word_t FLAG_RT         = 0xF800;           // Bits 11-15 (5 bits)
+    static constexpr word_t FLAG_RD         = 0x1F0000;         // Bits 16-20 (5 bits)
+    static constexpr word_t FLAG_SHAMT      = 0x3E00000;        // Bits 21-25 (5 bits)
+    static constexpr word_t FLAG_FUNCT      = 0xFC000000;       // Bits 26-31 (upper 6 bits)
+    static constexpr word_t FLAG_IMM        = 0xFFFF0000;       // Bits 16-31 (upper 16 bits)
+    static constexpr word_t FLAG_ADDR       = 0xFFFFFFC0;       // Bits 6-31 (upper 26 bits)
+
+    // Limits (starting at 0 and ending at number)
+    static constexpr word_t LIMIT_OPCODE    = 63;               // 6 bits (2^6-1 = 63)
+    static constexpr word_t LIMIT_RS        = 31;               // 5 bits (2^5-1 = 31)
+    static constexpr word_t LIMIT_RT        = 31;               // 5 bits (2^5-1 = 31)
+    static constexpr word_t LIMIT_RD        = 31;               // 5 bits (2^5-1 = 31)
+    static constexpr word_t LIMIT_SHAMT     = 31;               // 5 bits (2^5-1 = 31)
+    static constexpr word_t LIMIT_FUNCT     = 63;               // 6 bits (2^6-1 = 63)
+    static constexpr word_t LIMIT_IMM       = 65535;            // 16 bits (2^16-1 = 65,535)
+    static constexpr word_t LIMIT_ADDR      = 67108863;         // 26 bits (2^26-1 = 67,108,863)
+
 
     // MARK: -- Private Variables
 
+    /** The address. */
+    word_t m_wAddr;
+
     /** The function type. */
-    funct_t m_funct;
+    word_t m_wFunct;
 
     /** 16-bit immediate value. */
-    imm_t m_immediate;
+    word_t m_wImmediate;
+
+    /** The opcode. */
+    word_t m_wOpcode;
 
     /** Destination register. */
-    reg_t m_regRd;
+    word_t m_wRegRd;
 
     /** Source register(s) */
-    reg_t m_regRs, m_regRt;
+    word_t m_wRegRs, m_wRegRt;
 
     /** The shift amount. */
-    shamt_t m_shamt;
+    word_t m_wShamt;
 
     /** The instruction type. */
     InstructionType m_type;
@@ -65,37 +88,43 @@ public:
      * Returns the function types.
      * @return The function type
      */
-    funct_t getFunct() const;
+    word_t getFunct() const;
 
     /**
      * Returns the signed 16-bit immediate value.
      * @return The immediate value
      */
-    imm_t getImmediate() const;
+    word_t getImmediate() const;
+
+    /**
+     * Returns the opcode.
+     * @return The opcode
+     */
+    word_t getOpcode() const;
 
     /**
      * Returns the destination register.
      * @return The destination register
      */
-    reg_t getRd() const;
+    word_t getRd() const;
 
     /**
      * Returns the first source register.
      * @return The first source register
      */
-    reg_t getRs() const;
+    word_t getRs() const;
 
     /**
      * Returns the second source register.
      * @return The second source register
      */
-    reg_t getRt() const;
+    word_t getRt() const;
 
     /**
      * Returns the shift amount.
      * @return The shift amount
      */
-    shamt_t getShamt() const;
+    word_t getShamt() const;
 
     /**
      * Returns the instruction type.
@@ -106,38 +135,51 @@ public:
     /**
      * Sets the function type.
      * @param funct The function type
+     * @return Whether or not the function was set
      */
-    void setFunct(funct_t funct);
+    bool setFunct(word_t funct);
 
     /**
      * Sets the immediate value
      * @param immediate The immediate value
+     * @return Whether or not the immediate value was set
      */
-    void setImmediate(imm_t immediate);
+    bool setImmediate(word_t immediate);
+
+    /**
+     * Sets the opcode.
+     * @param opcode The opcode
+     * @return Whether or not the opcode was set
+     */
+    bool setOpcode(word_t opcode);
 
     /**
      * Sets the destination register.
      * @param rd The destination register
+     * @return Whether or not the destination register was set
      */
-    void setRd(reg_t rd);
+    bool setRd(word_t rd);
 
     /**
      * Sets the first source register.
      * @param rs The first source register
+     * @return Whether or not the first source register was set
      */
-    void setRs(reg_t rs);
+    bool setRs(word_t rs);
 
     /**
      * Sets the second source register.
      * @param rt The second source register
+     * @return Whether or not the second source register was set
      */
-    void setRt(reg_t rt);
+    bool setRt(word_t rt);
 
     /**
      * Sets the shift amount.
      * @param shamt The shift amount
+     * @return Whether or not the shift amount was set
      */
-    void setShamt(shamt_t shamt);
+    bool setShamt(word_t shamt);
 
     /**
      * Sets the instruction type.
