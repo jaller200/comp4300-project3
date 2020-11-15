@@ -23,5 +23,5 @@ public:
      * @throw SyntaxException A syntax exception if one occurs
      * @return Whether or not the parse was successful
      */
-    virtual bool parseLine(const std::string& line) = 0;
+    virtual bool parse(const std::string& line) = 0;
 };
