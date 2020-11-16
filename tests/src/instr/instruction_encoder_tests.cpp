@@ -217,4 +217,142 @@ TEST_CASE("Encode method properly encodes instruction structure to 32-bit value"
         Instruction::instr_t expectedOutput = 0x00000000;
         REQUIRE(InstructionEncoder::encode(instr) == expectedOutput);
     }
+
+
+    // MARK: -- J-Type Instructions
+    SECTION("J-type instruction with non-zero fields is properly encoded") {
+
+        Instruction instr;
+        instr.setType(InstructionType::J_FORMAT);
+        instr.setOpcode(10);
+        instr.setAddr(100);
+
+        Instruction::instr_t expectedOutput = 0x190A;
+        REQUIRE(InstructionEncoder::encode(instr) == expectedOutput);
+    }
+
+    SECTION("J-type instruction with all maximum fields for just J-type is properly encoded") {
+
+        Instruction instr;
+        instr.setType(InstructionType::J_FORMAT);
+        instr.setOpcode(63);
+        instr.setAddr(67108863);
+
+        // Other types set to non-zero
+        instr.setFunct(10);
+        instr.setImmediate(10);
+        instr.setRd(10);
+        instr.setRs(10);
+        instr.setRt(10);
+        instr.setShamt(10);
+
+        Instruction::instr_t expectedOutput = 0xFFFFFFFF;
+        REQUIRE(InstructionEncoder::encode(instr) == expectedOutput);
+    }
+
+    SECTION("J-type instruction with all minimum fields for just J-type is properly encoded") {
+
+        Instruction instr;
+        instr.setType(InstructionType::J_FORMAT);
+        instr.setOpcode(0);
+        instr.setAddr(0);
+
+        // Other types set to non-zero
+        instr.setFunct(10);
+        instr.setImmediate(10);
+        instr.setRd(10);
+        instr.setRs(10);
+        instr.setRt(10);
+        instr.setShamt(10);
+
+        Instruction::instr_t expectedOutput = 0x00000000;
+        REQUIRE(InstructionEncoder::encode(instr) == expectedOutput);
+    }
+
+    SECTION("J-type instruction with all maximum fields is properly encoded") {
+
+        Instruction instr;
+        instr.setType(InstructionType::J_FORMAT);
+        instr.setAddr(67108863);
+        instr.setFunct(63);
+        instr.setImmediate(65535);
+        instr.setOpcode(63);
+        instr.setRd(31);
+        instr.setRs(31);
+        instr.setRt(31);
+        instr.setShamt(31);
+
+        Instruction::instr_t expectedOutput = 0xFFFFFFFF;
+        REQUIRE(InstructionEncoder::encode(instr) == expectedOutput);
+    }
+
+    SECTION("J-type instruction with all minimum fields is properly encoded") {
+
+        Instruction instr;
+        instr.setType(InstructionType::J_FORMAT);
+        instr.setAddr(0);
+        instr.setFunct(0);
+        instr.setImmediate(0);
+        instr.setOpcode(0);
+        instr.setRd(0);
+        instr.setRs(0);
+        instr.setRt(0);
+        instr.setShamt(0);
+
+        Instruction::instr_t expectedOutput = 0x00000000;
+        REQUIRE(InstructionEncoder::encode(instr) == expectedOutput);
+    }
+
+
+    // MARK: -- Unknown Type
+    SECTION("Unknown type instructions with non-zero fields is properly encoded") {
+
+        Instruction instr;
+        instr.setType(InstructionType::UNKNOWN);
+        instr.setAddr(10);
+        instr.setFunct(10);
+        instr.setImmediate(10);
+        instr.setOpcode(10);
+        instr.setRd(10);
+        instr.setRs(10);
+        instr.setRt(10);
+        instr.setShamt(10);
+
+        Instruction::instr_t expectedOutput = 0x00000000;
+        REQUIRE(InstructionEncoder::encode(instr) == expectedOutput);
+    }
+
+    SECTION("Unknown type instructions with all maximum fields is properly encoded") {
+
+        Instruction instr;
+        instr.setType(InstructionType::UNKNOWN);
+        instr.setAddr(67108863);
+        instr.setFunct(63);
+        instr.setImmediate(65535);
+        instr.setOpcode(63);
+        instr.setRd(31);
+        instr.setRs(31);
+        instr.setRt(31);
+        instr.setShamt(31);
+
+        Instruction::instr_t expectedOutput = 0x00000000;
+        REQUIRE(InstructionEncoder::encode(instr) == expectedOutput);
+    }
+
+    SECTION("Unknown type instructions with all minimum fields is properly encoded") {
+
+        Instruction instr;
+        instr.setType(InstructionType::UNKNOWN);
+        instr.setAddr(0);
+        instr.setFunct(0);
+        instr.setImmediate(0);
+        instr.setOpcode(0);
+        instr.setRd(0);
+        instr.setRs(0);
+        instr.setRt(0);
+        instr.setShamt(0);
+
+        Instruction::instr_t expectedOutput = 0x00000000;
+        REQUIRE(InstructionEncoder::encode(instr) == expectedOutput);
+    }
 }
