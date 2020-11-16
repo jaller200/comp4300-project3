@@ -16,11 +16,14 @@ My goals for the structure of this are three-fold:
 * **Modular** - _I want developers to find it flexible and adaptable for their needs_
 * **Testable** - _I want the code to be build with confidence through rigorous unit and integration testing_
 
-This project is currently implemented as a binary executable, although my plan is to move the bulk of it to a static library in the future.
+Most of the project is implemented as a shared library, with the final product being a standalone application stored in the `app` folder.
 
 More details to come later...
 
 ## Requirements
+**Build Tools**: PipeSim requires CMake 2.8 and up.
+* CMake 2.8+
+
 **Compiler**: PipeSim requires C++11 and thus a compiler compatible with it. The program has been tested on the following compilers:
 
 * clang-5.0.0 on Ubuntu 14.04
@@ -29,26 +32,41 @@ More details to come later...
 
 In addition, I have manually tested it on the following compilers (academic-related):
 
-* g++-4.8.5 on CentOS 7
+* g++\-4.8.5 on CentOS 7
 * Apple Clang 11.0.0 (clang-1100.0.33.17) on macOS Mojave
 
 ## Build Instructions
-_Aside: Due to constraints from the school's Linux servers with an outdated CMake version (2.8), this project is currently built via Make. CMake 3.1+ will be used in the future._
-
-Download the current version and unpack it in a directory of choice. Inside that directory, run the following commands:
+Download the current version and unpack it in a directory of choice. Inside that directory, run the following command:
 
 ```
-make test
-make
+./scripts/build.sh
+./scripts/test.sh
 ```
 
-This will compile and run all validation tests, and then make the final project.
+This will compile the library, application, and tests binaries and run the validation tests. The outputs will be stored in the following folders:
+
+* **./bin**: The binaries for the pipeSim application and tests
+* **./lib**: The shared library containing most of the simulator code
+
+To clean up the project, just run the following:
+
+```
+./scripts/clean.sh
+```
+
+_NOTE: Run these scripts from the top-level directory. They will not work if you run them from inside the scripts folder._
 
 ## Execution Instructions
 The main executable is built into the `bin` folder. The simulator can be run as follows:
 
 ```
-./pipeSim <path/to/file.s>
+./bin/pipeSim <path/to/file.s>
+```
+
+If you would like to manually test the build, run the following:
+
+```
+./bin/pipeSimTests
 ```
 
 ## Author & Copyright
