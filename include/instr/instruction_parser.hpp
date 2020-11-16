@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "instr/instruction.hpp"
 #include "types.hpp"
 
 /**
@@ -9,11 +10,6 @@
  */
 class InstructionParser {
 public:
-
-    // MARK: -- Construction
-    InstructionParser() = default;
-    ~InstructionParser() = default;
-
 
     // MARK: -- Parsing Methods
 
@@ -23,5 +19,5 @@ public:
      * @throw SyntaxException A syntax exception if one occurs
      * @return Whether or not the parse was successful
      */
-    virtual bool parse(const std::string& line) = 0;
+    virtual Instruction parse(const std::string& line) = 0;
 };
