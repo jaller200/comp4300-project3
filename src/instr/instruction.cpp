@@ -2,8 +2,10 @@
 
 // MARK: -- Construction
 Instruction::Instruction()
-: m_wFunct(0)
+: m_wAddr(0)
+, m_wFunct(0)
 , m_wImmediate(0)
+, m_wOpcode(0)
 , m_wRegRd(0)
 , m_wRegRs(0)
 , m_wRegRt(0)
@@ -16,8 +18,10 @@ Instruction::Instruction()
 
 // Resets the instruction
 void Instruction::reset() {
+    this->m_wAddr = 0;
     this->m_wFunct = 0;
     this->m_wImmediate = 0;
+    this->m_wOpcode = 0;
     this->m_wRegRd = 0;
     this->m_wRegRs = 0;
     this->m_wRegRt = 0;
@@ -27,6 +31,11 @@ void Instruction::reset() {
 
 
 // MARK: -- Getters / Setters
+
+// Returns the address
+word_t Instruction::getAddr() const {
+    return this->m_wAddr;
+}
 
 // Returns the function type
 word_t Instruction::getFunct() const {
@@ -66,6 +75,14 @@ word_t Instruction::getShamt() const {
 // Returns the instruction type
 InstructionType Instruction::getType() const {
     return this->m_type;
+}
+
+// Sets the address
+bool Instruction::setAddr(word_t addr) {
+
+    if (addr > LIMIT_ADDR) return false;
+    this->m_wAddr = addr;
+    return true;
 }
 
 // Sets the function type

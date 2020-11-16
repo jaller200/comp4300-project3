@@ -13,40 +13,9 @@
 class Memory {
 public:
 
-    // Typedefs
+    // MARK: -- Typedefs
     using addr_t = word_t;                  // An address reference    
 
-private:
-
-    // MARK: -- Private Constants
-    
-    /** The start of the userland memory section. */
-    static constexpr addr_t MEM_USER_START = 0x1000;
-
-
-    // MARK: -- Private Variables
-
-    // Memory
-    std::vector<byte_t> m_vecMemory;       // The main memory
-
-    // Segment Sizes
-    size_t m_szDataSegment;                 // The data segment size (in bytes)
-    size_t m_szTextSegment;                 // The text segment size (in bytes)
-
-    
-    // MARK: -- Private Methods
-
-    /**
-     * Returns the logical offset into our memory from a virtual
-     * address.
-     * @param addr The address to convert
-     * @param expSize The expected size in bytes (defaults to 1)
-     * @return The offset into the array, or -1 for an invalid address or 
-     *          address that exceeds expected size
-     */
-    std::vector<byte_t>::size_type addressToOffset(addr_t addr, size_t expSize = 1) const;
-
-public:
 
     // MARK: -- Initialisation
     Memory(size_t dataSize, size_t textSize);
@@ -124,4 +93,34 @@ public:
      * @return The total memory size
      */
     size_t getTotalSize() const;
+
+private:
+
+    // MARK: -- Private Constants
+    
+    /** The start of the userland memory section. */
+    static constexpr addr_t MEM_USER_START = 0x1000;
+
+
+    // MARK: -- Private Variables
+
+    // Memory
+    std::vector<byte_t> m_vecMemory;       // The main memory
+
+    // Segment Sizes
+    size_t m_szDataSegment;                 // The data segment size (in bytes)
+    size_t m_szTextSegment;                 // The text segment size (in bytes)
+
+    
+    // MARK: -- Private Methods
+
+    /**
+     * Returns the logical offset into our memory from a virtual
+     * address.
+     * @param addr The address to convert
+     * @param expSize The expected size in bytes (defaults to 1)
+     * @return The offset into the array, or -1 for an invalid address or 
+     *          address that exceeds expected size
+     */
+    std::vector<byte_t>::size_type addressToOffset(addr_t addr, size_t expSize = 1) const;
 };

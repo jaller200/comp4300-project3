@@ -39,35 +39,6 @@ public:
     static constexpr word_t LIMIT_IMM       = 65535;            // 16 bits (2^16-1 = 65,535)
     static constexpr word_t LIMIT_ADDR      = 67108863;         // 26 bits (2^26-1 = 67,108,863)
 
-private:
-
-    // MARK: -- Private Variables
-
-    /** The address. */
-    word_t m_wAddr;
-
-    /** The function type. */
-    word_t m_wFunct;
-
-    /** 16-bit immediate value. */
-    word_t m_wImmediate;
-
-    /** The opcode. */
-    word_t m_wOpcode;
-
-    /** Destination register. */
-    word_t m_wRegRd;
-
-    /** Source register(s) */
-    word_t m_wRegRs, m_wRegRt;
-
-    /** The shift amount. */
-    word_t m_wShamt;
-
-    /** The instruction type. */
-    InstructionType m_type;
-
-public:
 
     // MARK: -- Construction
     Instruction();
@@ -83,6 +54,12 @@ public:
 
 
     // MARK: -- Getters / Setters
+
+    /**
+     * Returns the address.
+     * @return The address
+     */
+    word_t getAddr() const;
 
     /**
      * Returns the function types.
@@ -131,6 +108,13 @@ public:
      * @return The instruction type
      */
     InstructionType getType() const;
+
+    /**
+     * Sets the address.
+     * @param addr The address to set
+     * @return Whether or not the address was set
+     */
+    bool setAddr(word_t addr);
 
     /**
      * Sets the function type.
@@ -186,4 +170,32 @@ public:
      * @param type The type
      */
     void setType(InstructionType type);
+
+private:
+
+    // MARK: -- Private Variables
+
+    /** The address. */
+    word_t m_wAddr;
+
+    /** The function type. */
+    word_t m_wFunct;
+
+    /** 16-bit immediate value. */
+    word_t m_wImmediate;
+
+    /** The opcode. */
+    word_t m_wOpcode;
+
+    /** Destination register. */
+    word_t m_wRegRd;
+
+    /** Source register(s) */
+    word_t m_wRegRs, m_wRegRt;
+
+    /** The shift amount. */
+    word_t m_wShamt;
+
+    /** The instruction type. */
+    InstructionType m_type;
 };

@@ -6,16 +6,6 @@
  * A basic exception for syntax errors.
  */
 class SyntaxError : public std::runtime_error {
-private:
-
-    // MARK: -- Private Variables
-
-    /** The filename that the syntax error is in. */
-    std::string m_strFilename;
-
-    /** The line number the syntax error is on. */
-    int m_iLineNumber;
-
 public:
 
     /**
@@ -40,4 +30,14 @@ public:
         , m_strFilename(filename)
         , m_iLineNumber(lineNumber)
     { }
+
+private:
+
+    // MARK: -- Private Variables
+
+    /** The filename that the syntax error is in. */
+    std::string m_strFilename;
+
+    /** The line number the syntax error is on. */
+    int m_iLineNumber;
 };

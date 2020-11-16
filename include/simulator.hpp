@@ -9,13 +9,6 @@
  * controlling all aspects of the simulation.
  */
 class Simulator {
-private:
-
-    // MARK: -- Private Variables
-
-    /** The memory of the program. */
-    Memory m_memory;
-
 public:
 
     // MARK: -- Construction
@@ -30,4 +23,11 @@ public:
      * Destructor
      */
     ~Simulator() = default;
+
+private:
+
+    // MARK: -- Private Variables
+
+    /** The memory of the program. */
+    Memory m_memory;
 };
