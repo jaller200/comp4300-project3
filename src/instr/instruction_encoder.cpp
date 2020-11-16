@@ -11,6 +11,15 @@ Instruction::instr_t InstructionEncoder::encode(const Instruction& instr) {
     // Handle each type separately
     switch (instr.getType()) {
 
+        case InstructionType::I_FORMAT: {
+
+            output = (output & ~Instruction::FLAG_IMM) | ((instr.getImmediate() << 16) & Instruction::FLAG_IMM);
+            output = (output & ~Instruction::FLAG_RT) | ((instr.getRt() << 11) & Instruction::FLAG_RT);
+            output = (output & ~Instruction::FLAG_RS) | ((instr.getRs() << 6) & Instruction::FLAG_RS);
+            output = (output & ~Instruction::FLAG_OPCODE) | (instr.getOpcode() & Instruction::FLAG_OPCODE);
+            break;
+        }
+
         // R-Type
         case InstructionType::R_FORMAT: {
             
