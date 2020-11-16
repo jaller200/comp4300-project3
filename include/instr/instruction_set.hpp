@@ -1,5 +1,6 @@
 #pragma once
 
+#include "instr/instruction_parser.hpp"
 #include "instr/instruction_type.hpp"
 #include "types.hpp"
 
@@ -7,9 +8,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-// MARK: -- Forward Declarations
-class InstructionParser;
 
 /**
  * A basic class that holds an instruction set.

@@ -11,6 +11,14 @@
 class InstructionParser {
 public:
 
+    // MARK: -- Construction
+
+    /**
+     * Virtual destructor.
+     */
+    virtual ~InstructionParser() = 0;
+
+
     // MARK: -- Parsing Methods
 
     /**

@@ -5,9 +5,9 @@ PROJ_SRC_DIR 	:= src
 PROJ_OBJ_DIR 	:= obj
 PROJ_BIN_DIR	:= bin
 
-TEST_SRC_DIR	:= tests/src
-TEST_OBJ_DIR 	:= tests/obj
-TEST_BIN_DIR 	:= tests/bin
+TEST_SRC_DIR	:= tests/tests/src
+TEST_OBJ_DIR 	:= tests/tests/obj
+TEST_BIN_DIR 	:= tests/tests/bin
 
 # Executables
 PROJ_EXEC		:= $(PROJ_BIN_DIR)/pipeSim

@@ -44,6 +44,7 @@ TEST_CASE("Instruction set is properly able to register R-Type instructions") {
     SECTION("Registering a nominal R-Type instruction works properly") {
 
         InstructionSet instrSet;
+        REQUIRE(1 == 1);
         //REQUIRE(instrSet.registerRType())
     }
 }
