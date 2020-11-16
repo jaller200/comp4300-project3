@@ -58,4 +58,23 @@ TEST_CASE("Encode method properly encodes instruction structure to 32-bit value"
         Instruction::instr_t expectedOutput = 0x28A3104A;
         REQUIRE(InstructionEncoder::encode(instr) == expectedOutput);
     }
+
+    SECTION("R-type instruction with all maximum fields for just R-type is properly encoded") {
+
+        Instruction instr;
+        instr.setType(InstructionType::R_FORMAT);
+        instr.setOpcode(63);
+        instr.setRs(31);
+        instr.setRt(31);
+        instr.setRd(31);
+        instr.setShamt(31);
+        instr.setFunct(63);
+
+        // Other types set to non-zero
+        instr.setAddr(10);
+        instr.setImmediate(10);
+
+        Instruction::instr_t expectedOutput = 0xFFFFFFFF;
+        REQUIRE(InstructionEncoder::encode(instr) == expectedOutput);
+    }
 }
