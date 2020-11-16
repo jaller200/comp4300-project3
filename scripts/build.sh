@@ -1,9 +1,6 @@
-# First remove old directories
-rm -rf bin
-rm -rf build
-rm -rf lib
+#!/bin/bash
 
-# Now re-create these
+# Create our directories if they don't exist
 mkdir -p bin
 mkdir -p build
 mkdir -p lib
@@ -15,5 +12,5 @@ make
 
 # Now copy all lib files
 cd ..
-cp -r build/bin bin
-cp -r build/lib lib
+cp -r build/bin/* bin
+cp -r build/lib/* lib

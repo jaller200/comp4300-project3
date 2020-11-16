@@ -19,23 +19,28 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # Include Information 
 include_directories(include)
+include_directories(tests)
 
-# Source Information
-file(GLOB SOURCES "src/instr/*.cpp"
-                    "src/memory/*.cpp"
-                    "src/simulator.cpp")
+# Library Sources
+file(GLOB LIB_SOURCES "src/*.cpp"
+                        "src/instr/*.cpp"
+                        "src/memory/*.cpp")
+
+# Application Sources
+file(GLOB APP_SOURCES "app/main.cpp")
+
+# Test Sources
+file(GLOB TEST_SOURCES "tests/*.cpp"
+                        "tests/instr/*.cpp"
+                        "tests/memory/*.cpp")
 
 # Library Information
-add_library(pipeSimLib ${SOURCES})
+add_library(pipeSimLib ${LIB_SOURCES})
 
 # Executable Information
-add_executable(pipeSim "src/main.cpp")
+add_executable(pipeSim ${APP_SOURCES})
 target_link_libraries(pipeSim pipeSimLib)
 
-# Project Directories
-#add_subdirectory(src)
-#add_subdirectory(test)
-
-# Testing
-#enable_testing()
-#add_test(NAME pipe_sim_tests COMMAND test)
+# Testing Information
+add_executable(pipeSimTests ${TEST_SOURCES})
+target_link_libraries(pipeSimTests pipeSimLib)

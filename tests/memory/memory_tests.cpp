@@ -1,4 +1,4 @@
-#include "tests/include/catch.hpp"
+#include "catch.hpp"
 
 #include "memory/memory.hpp"
 #include "types.hpp"
