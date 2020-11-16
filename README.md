@@ -22,18 +22,18 @@ More details to come later...
 
 ## Requirements
 **Build Tools**: PipeSim requires CMake 2.8 and up.
-* CMake 2.8+
+* _CMake 2.8+_
 
 **Compiler**: PipeSim requires C++11 and thus a compiler compatible with it. The program has been tested on the following compilers:
 
-* clang-5.0.0 on Ubuntu 14.04
-* g++-4.8.4 on Ubuntu 14.04
-* AppleClang-9.1.0 on macOS
+* _clang-5.0.0 on Ubuntu 14.04_
+* _g++-4.8.4 on Ubuntu 14.04_
+* _AppleClang-9.1.0 on macOS_
 
 In addition, I have manually tested it on the following compilers (academic-related):
 
-* g++\-4.8.5 on CentOS 7
-* Apple Clang 11.0.0 (clang-1100.0.33.17) on macOS Mojave
+* _g++\-4.8.5 on CentOS 7_
+* _Apple Clang 11.0.0 (clang-1100.0.33.17) on macOS Mojave_
 
 ## Build Instructions
 Download the current version and unpack it in a directory of choice. Inside that directory, run the following command:
