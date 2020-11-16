@@ -3,13 +3,9 @@
 #include "instr/instruction.hpp"
 #include "instr/instruction_type.hpp"
 
-#include <iostream>
-
 /**
- * Instructio::setters
- * 
+ * Method: Instruction::(setters)
  * Desired confidence level: boundary value analysis
- * Type: Setters with boundary values
  * 
  * Inputs:
  *      addr        -> A 32-bit integer within the range of 0 to 67,108,863 (2^26-1), unvalidated
