@@ -3,6 +3,35 @@
 #include "utils/string_utils.hpp"
 
 /**
+ * Method: StringUtils::toLowerCase(..)
+ * Desired Confidence Level: Basic validation
+ * 
+ * Inputs:
+ *      str     -> Any valid string, validated
+ * 
+ * Outputs:
+ *      A string where all ASCII characters are lower case
+ * 
+ * Valid Tests:
+ *      str     -> a basic string with upper and lower case letters
+ *                 a basic string with all upper case letters
+ *                 a basic string with all lower case letters
+ *                 a basic string with upper and lowercase Greek letters
+ *                 an empty string
+ *
+ * Invalid Tests:
+ *      None
+ */
+TEST_CASE("Converting strings to lower case work properly") {
+
+    SECTION("Converting a nominal string to lower case works") {
+        std::string result = StringUtils::toLowerCase("I absolutely LOVE programming!");
+        std::string expected = "i absolutely love programming!";
+        REQUIRE(result == expected);
+    }
+}
+
+/**
  * Method: StringUtils::ltrim(..)
  * Desired Confidence Level: Basic validation
  * 
@@ -20,6 +49,7 @@
  *                 a basic string with tabs at the start
  *                 a basic string with a mixture of all possible whitespace types
  *                 a basic string with no whitespace at the front
+ *                 an empty string
  * 
  * Invalid Tests:
  *      None
@@ -61,6 +91,12 @@ TEST_CASE("Left trimming a string works properly") {
         std::string expected = "this is a test";
         REQUIRE(result == expected);
     }
+
+    SECTION("Left trimming and empty string returns an empty string") {
+        std::string result = StringUtils::ltrim("");
+        std::string expected = "";
+        REQUIRE(result == expected);
+    }
 }
 
 /**
@@ -81,6 +117,7 @@ TEST_CASE("Left trimming a string works properly") {
  *                 a basic string with tabs at the end
  *                 a basic string with a mixture of all possible whitespace types at the end
  *                 a basic string with no whitespace at the end
+ *                 an empty string
  * 
  * Invalid Tests:
  *      None
@@ -122,6 +159,12 @@ TEST_CASE("Right trimming a string works properly") {
         std::string expected = "this is a test";
         REQUIRE(result == expected);
     }
+
+    SECTION("Right trimming and empty string returns an empty string") {
+        std::string result = StringUtils::rtrim("");
+        std::string expected = "";
+        REQUIRE(result == expected);
+    }
 }
 
 /**
@@ -143,6 +186,7 @@ TEST_CASE("Right trimming a string works properly") {
  *                 a basic string with whitepace at the start and the end
  *                 a basic string with a mixture of all possible whitespace types at the start and end
  *                 a basic string with no whitespace at the start or end
+ *                 an empty string
  * 
  * Invalid Tests:
  *      None
@@ -188,6 +232,12 @@ TEST_CASE("Trimming a string works properly") {
     SECTION("Trimming a string with no whitespace at the start or end just returns the string") {
         std::string result = StringUtils::trim("this is a test");
         std::string expected = "this is a test";
+        REQUIRE(result == expected);
+    }
+
+    SECTION("Trimming and empty string returns an empty string") {
+        std::string result = StringUtils::trim("");
+        std::string expected = "";
         REQUIRE(result == expected);
     }
 }

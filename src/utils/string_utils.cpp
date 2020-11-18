@@ -4,6 +4,18 @@
 #include <cctype>
 #include <locale>
 
+// MARK: -- Upper / Lower Case Methods
+
+std::string StringUtils::toLowerCase(std::string str) {
+
+    // Convert the string
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+    return str;
+}
+
+
+// MARK: -- Trimming Methods
+
 // Trims the left whitespace off a string
 std::string StringUtils::ltrim(std::string str) {
 

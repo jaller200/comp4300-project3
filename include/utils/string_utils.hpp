@@ -7,6 +7,18 @@
  */
 namespace StringUtils {
 
+    // MARK: -- Upper / Lower Case Methods
+
+    /**
+     * Converts the string to lower case.
+     * @param str The string to convert
+     * @return The converted string
+     */
+    std::string toLowerCase(std::string str);
+
+
+    // MARK: -- Trimming Methods
+
     /**
      * Copies the string and trims the left whitespace off (if any).
      * @param str The string to copy and trim

@@ -24,6 +24,13 @@
 class InstructionSet {
 public:
 
+    // MARK: -- Construction
+    InstructionSet() = default;
+    ~InstructionSet() = default;
+
+
+    // MARK: -- Registration Methods
+
     /**
      * Registers an R-Type instruction with the instruction set. 
      * 
