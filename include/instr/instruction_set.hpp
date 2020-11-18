@@ -4,10 +4,10 @@
 #include "instr/instruction_type.hpp"
 #include "types.hpp"
 
+#include <array>
 #include <memory>
 #include <string>
 #include <unordered_map>
-#include <vector>
 
 /**
  * A basic class that holds an instruction set.
@@ -49,7 +49,7 @@ private:
     std::unordered_map<std::string, hword_t> m_mapInstructions;
 
     /** A vector matching an instruction opcode only to a types. */
-    std::vector<InstructionType> m_vecOpcodeType;
+    std::array<InstructionType, Instruction::LIMIT_OPCODE+1> m_vecOpcodeType;
 
     /** A map correlating an instruction opcode/funct pair to a parser. */
     std::unordered_map<hword_t, std::unique_ptr<InstructionParser>> m_mapParsers;
