@@ -1,6 +1,9 @@
 #include "catch.hpp"
 
+#include <memory>
+
 #include "instr/instruction_set.hpp"
+#include "mocks/rtype_instruction_parser.hpp"
 
 /**
  * Method: InstructionSet::registerRType(..)
@@ -18,10 +21,11 @@
  * 
  * Valid Tests:
  *      name        -> nominal value
- *      opcode      -> nominal value
+ *                     some uppercase letters
+ *      opcode      -> nominal value (10)
  *                     minimum value (0, edge case)
  *                     maximum value (63, edge case)
- *      funct       -> nominal value
+ *      funct       -> nominal value (11)
  *                     nominal value #2 (same opcode, different funct)
  *                     minimum value (0, edge case)
  *                     maximum value (63, edge case)
@@ -41,10 +45,152 @@
  */
 TEST_CASE("Instruction set is properly able to register R-Type instructions") {
 
+    // MARK: -- Valid Tests
+
     SECTION("Registering a nominal R-Type instruction works properly") {
 
         InstructionSet instrSet;
-        REQUIRE(1 == 1);
-        //REQUIRE(instrSet.registerRType())
+        std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
+        REQUIRE(instrSet.registerRType("test", 10, 11, std::move(parser)) == true);
+        REQUIRE(instrSet.getType(10) == InstructionType::R_FORMAT);
+        REQUIRE(instrSet.getType("test") == InstructionType::R_FORMAT);
+
+        SECTION("Registering another R-Type instruction with the same opcode but different funct works properly") {
+
+            std::unique_ptr<InstructionParser> parser2(new RTypeInstructionParser());
+            REQUIRE(instrSet.registerRType("test2", 10, 12, std::move(parser2)) == true);
+            REQUIRE(instrSet.getType(10) == InstructionType::R_FORMAT);
+            REQUIRE(instrSet.getType("test") == InstructionType::R_FORMAT);
+        }
+
+        SECTION("Registering another R-Type instruction with the same opcode and type fails") {
+
+            std::unique_ptr<InstructionParser> parser2(new RTypeInstructionParser());
+            REQUIRE_FALSE(instrSet.registerRType("test2", 10, 11, std::move(parser2)));
+            REQUIRE(instrSet.getType(10) == InstructionType::R_FORMAT);
+            REQUIRE(instrSet.getType("test2") == InstructionType::UNKNOWN);
+        }
+
+        SECTION("Registering another R-Type instruction with the same name fails") {
+            
+            std::unique_ptr<InstructionParser> parser2(new RTypeInstructionParser());
+            REQUIRE_FALSE(instrSet.registerRType("test", 12, 13, std::move(parser2)));
+            REQUIRE(instrSet.getType(12) == InstructionType::UNKNOWN);
+            REQUIRE(instrSet.getType("test") == InstructionType::R_FORMAT);
+        }
+    }
+
+    SECTION("Registering an R-Type instruction with a min opcode works properly") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
+        REQUIRE(instrSet.registerRType("test", 0, 11, std::move(parser)) == true);
+        REQUIRE(instrSet.getType(0) == InstructionType::R_FORMAT);
+        REQUIRE(instrSet.getType("test") == InstructionType::R_FORMAT);
+    }
+
+    SECTION("Registering an R-Type instruction with a max opcode works properly") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
+        REQUIRE(instrSet.registerRType("test", 63, 11, std::move(parser)) == true);
+        REQUIRE(instrSet.getType(63) == InstructionType::R_FORMAT);
+        REQUIRE(instrSet.getType("test") == InstructionType::R_FORMAT);
+    }
+
+    SECTION("Registering an R-Type instruction with a min funct works properly") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
+        REQUIRE(instrSet.registerRType("test", 10, 0, std::move(parser)) == true);
+        REQUIRE(instrSet.getType(10) == InstructionType::R_FORMAT);
+        REQUIRE(instrSet.getType("test") == InstructionType::R_FORMAT);
+    }
+
+    SECTION("Registering an R-Type instruction with a max funct works properly") {
+        
+        InstructionSet instrSet;
+        std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
+        REQUIRE(instrSet.registerRType("test", 10, 63, std::move(parser)) == true);
+        REQUIRE(instrSet.getType(10) == InstructionType::R_FORMAT);
+        REQUIRE(instrSet.getType("test") == InstructionType::R_FORMAT);
+    }
+
+    SECTION("Registering an R-Type instruction with some uppercase letters in the name works properly") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
+        REQUIRE(instrSet.registerRType("TeSt", 10, 63, std::move(parser)) == true);
+        REQUIRE(instrSet.getType(10) == InstructionType::R_FORMAT);
+        REQUIRE(instrSet.getType("test") == InstructionType::R_FORMAT);
+    }
+
+
+    // MARK: -- Invalid Tests
+
+    SECTION("Registering an R-Type instruction with a blank name fails") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
+        REQUIRE_FALSE(instrSet.registerRType("", 10, 11, std::move(parser)));
+        REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+    }
+
+    SECTION("Registering an R-Type instruction with just whitespace for a name fails") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
+        REQUIRE_FALSE(instrSet.registerRType("     ", 10, 11, std::move(parser)));
+        REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+    }
+
+    SECTION("Registering an R-Type instruction with whitespace and ASCII fails") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
+        REQUIRE_FALSE(instrSet.registerRType("   test", 10, 11, std::move(parser)));
+        REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+    }
+
+    SECTION("Registering an R-Type instruction with a newline fails") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
+        REQUIRE_FALSE(instrSet.registerRType("\ntest", 10, 11, std::move(parser)));
+        REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+    }
+
+    SECTION("Registering an R-Type instruction with a tab fails") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
+        REQUIRE_FALSE(instrSet.registerRType("\ttest", 10, 11, std::move(parser)));
+        REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+    }
+
+    SECTION("Registering an R-Type instruction with an opcode above max value fails") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
+        REQUIRE_FALSE(instrSet.registerRType("test", 64, 11, std::move(parser)));
+        REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("test") == InstructionType::UNKNOWN);
+    }
+
+    SECTION("Registering an R-Type instruction with a funct above max value fails") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
+        REQUIRE_FALSE(instrSet.registerRType("test", 10, 64, std::move(parser)));
+        REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("test") == InstructionType::UNKNOWN);
+    }
+
+    SECTION("Registering an R-Type instruction with a null parser fails") {
+
+        InstructionSet instrSet;
+        REQUIRE_FALSE(instrSet.registerRType("test", 10, 11, nullptr));
+        REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("test") == InstructionType::UNKNOWN);
     }
 }

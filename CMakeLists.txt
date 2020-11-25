@@ -18,8 +18,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # Include Information 
+include_directories(3rdparty)
 include_directories(include)
 include_directories(tests)
+
+# 3rd Party Library Sources
+file(GLOB SPDLOG_SOURCES "3rdparty/spdlog/*.cpp")
 
 # Library Sources
 file(GLOB LIB_SOURCES "src/*.cpp"
@@ -34,14 +38,27 @@ file(GLOB APP_SOURCES "app/main.cpp")
 file(GLOB TEST_SOURCES "tests/*.cpp"
                         "tests/instr/*.cpp"
                         "tests/memory/*.cpp"
+                        "tests/mocks/*.cpp"
                         "tests/utils/*.cpp")
+
+# 3rd Party Library Information
+add_library(spdlog ${SPDLOG_SOURCES})
+target_compile_definitions(spdlog PUBLIC SPDLOG_COMPILED_LIB)
+
+find_package(Threads REQUIRED)
+if (THREADS_HAVE_PTHREAD_ARG)
+    target_compile_options(spdlog PUBLIC "-pthread")
+endif()
+if (CMAKE_THREAD_LIBS_INIT)
+    target_link_libraries(spdlog "${CMAKE_THREAD_LIBS_INIT}")
+endif()
 
 # Library Information
 add_library(pipeSimLib ${LIB_SOURCES})
 
 # Executable Information
 add_executable(pipeSim ${APP_SOURCES})
-target_link_libraries(pipeSim pipeSimLib)
+target_link_libraries(pipeSim pipeSimLib spdlog)
 
 # Testing Information
 add_executable(pipeSimTests ${TEST_SOURCES})

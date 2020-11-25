@@ -1,5 +1,6 @@
 #pragma once
 
+#include "instr/instruction_metadata.hpp"
 #include "instr/instruction_parser.hpp"
 #include "instr/instruction_type.hpp"
 #include "types.hpp"
@@ -23,6 +24,13 @@
  */
 class InstructionSet {
 public:
+
+    // MARK: -- Public Types
+
+    /** Instruction Opcode/Funct Keys (lower 8 bits = opcode, upper 8 bits = funct) */
+    using instr_id_t = hword_t;
+
+
 
     // MARK: -- Construction
     InstructionSet();
@@ -58,16 +66,38 @@ public:
      */
     InstructionType getType(word_t opcode) const;
 
+    /**
+     * Returns the instruction type for an instruction name. Converts the
+     * name to lower case first.
+     * @param name The name
+     * @return The instruction type, or UNKNOWN
+     */
+    InstructionType getType(const std::string& name) const;
+
 private:
 
     // MARK: -- Private Variables;
 
-    /** A map correlating an instruction psuedonym (i.e. "addi") to an opcode/funct pair. */
-    std::unordered_map<std::string, hword_t> m_mapInstructions;
+    /** An array marking the registered type of the opcode. */
+    std::array<InstructionType, Instruction::LIMIT_OPCODE+1> m_arrOpcodeTypes;
 
-    /** A vector matching an instruction opcode only to a types. */
-    std::array<InstructionType, Instruction::LIMIT_OPCODE+1> m_arrOpcodeType;
+    /** A map of instruction names to instruction metadata. */
+    std::unordered_map<std::string, std::shared_ptr<InstructionMetadata>> m_mapNameToMetadata;
 
-    /** A map correlating an instruction opcode/funct pair to a parser. */
-    std::unordered_map<hword_t, std::unique_ptr<InstructionParser>> m_mapParsers;
+    /** A map of instruction IDs (opcode/funct) to instruction metadata. */
+    std::unordered_map<instr_id_t, std::shared_ptr<InstructionMetadata>> m_mapIDToMetadata;
+
+
+    // MARK: -- Private Methods
+
+    /**
+     * A private method to handle instruction registration.
+     * @param name The name to register with
+     * @param opcode The opcode to register with
+     * @param funct The funct to register with
+     * @param type The type to register with
+     * @param parser The parser to register with
+     * @return True if successfully registered, false if the name, opcode, funct, or metadata are invalid or null
+     */
+    bool registerInstruction(const std::string& name, word_t opcode, word_t funct, InstructionType type, std::unique_ptr<InstructionParser> parser);
 };

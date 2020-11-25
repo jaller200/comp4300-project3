@@ -16,7 +16,7 @@ public:
     /**
      * Virtual destructor.
      */
-    virtual ~InstructionParser() = 0;
+    virtual ~InstructionParser() { }
 
 
     // MARK: -- Parsing Methods
@@ -27,5 +27,5 @@ public:
      * @throw SyntaxException A syntax exception if one occurs
      * @return Whether or not the parse was successful
      */
-    virtual Instruction parse(const std::string& line) = 0;
+    virtual Instruction parse(const std::string& line) const = 0;
 };
