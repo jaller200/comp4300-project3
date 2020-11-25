@@ -8,12 +8,12 @@
 /**
  * A simple mock class for an instruction parser.
  */
-class ITypeInstructionParser: public InstructionParser {
+class JTypeInstructionParser: public InstructionParser {
 public:
 
     // MARK: -- Construction
-    ITypeInstructionParser() = default;
-    ~ITypeInstructionParser() = default;
+    JTypeInstructionParser() = default;
+    ~JTypeInstructionParser() = default;
 
 
     // MARK: -- Inherited Parsing Methods
@@ -24,7 +24,7 @@ public:
      * For this parser, everything is set to 0 except:
      * 
      *  opcode      = 10    0xA
-     *  immediate   = 100   0x64
+     *  address     = 100   0x64
      * 
      * These values will help us properly test our code
      */

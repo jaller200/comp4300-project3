@@ -18,9 +18,60 @@ bool InstructionSet::registerIType(const std::string& name, word_t opcode, std::
     return this->registerInstruction(name, opcode, 0, InstructionType::I_FORMAT, std::move(parser));
 }
 
+// Registers a J-Type instruction
+bool InstructionSet::registerJType(const std::string& name, word_t opcode, std::unique_ptr<InstructionParser> parser) {
+    return this->registerInstruction(name, opcode, 0, InstructionType::J_FORMAT, std::move(parser));
+}
+
 // Registers an R-type instruction.
 bool InstructionSet::registerRType(const std::string& name, word_t opcode, word_t funct, std::unique_ptr<InstructionParser> parser) {
     return this->registerInstruction(name, opcode, funct, InstructionType::R_FORMAT, std::move(parser));
+}
+
+
+// MARK: -- Registration Method
+
+// Registers a psuedo-instruction
+bool InstructionSet::registerPsuedoType(const std::string& name, std::unique_ptr<InstructionParser> parser) {
+
+    // For this one, we need to handle it a bit differently.
+    std::string instrName = StringUtils::trim(StringUtils::toLowerCase(name));
+
+    // Verify that we actually have a name
+    if (instrName == "") {
+        spdlog::error("Unable to register psuedo-instruction - no name provided");
+        return false;
+    }
+
+    // Also verify that there was no whitespace in the original name
+    if (instrName != StringUtils::toLowerCase(name)) {
+        spdlog::error("Unable to register psuedo-instruction - name must not contain any whitespace");
+        return false;
+    }
+
+    // Next verify that we have not registered a duplicate name
+    if (this->m_mapNameToMetadata.find(instrName) != this->m_mapNameToMetadata.end()) {
+        spdlog::error("Unable to register psuedo-instruction with name {} - name already exists", instrName);
+        return false;
+    }
+
+    // And finally make sure our parser is not null
+    if (parser == nullptr) {
+        spdlog::error("Unable to register psuedo-instruction with name {} - cannot register null parser", instrName);
+        return false;
+    }
+
+    // Now create our metadata
+    std::shared_ptr<InstructionMetadata> metadata(new InstructionMetadata());
+    metadata->ptrParser = std::move(parser);
+    metadata->strName = name;
+    metadata->type = InstructionType::PSUEDO;
+    metadata->wFunct = -1;
+    metadata->wOpcode = -1;
+
+    // Now register everything
+    this->m_mapNameToMetadata[name] = metadata;
+    return true;
 }
 
 

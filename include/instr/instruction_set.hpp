@@ -55,6 +55,21 @@ public:
     bool registerIType(const std::string& name, word_t opcode, std::unique_ptr<InstructionParser> parser);
 
     /**
+     * Registers a J-Type instruction with the instruction set.
+     * If the opcode is registered to another type, this will fail.
+     * 
+     * In addition, the name will automatically be converted to lower case.
+     * If there is a duplicate name found, or if the name contains any
+     * whitespace, this returns false.
+     * 
+     * @param name The name
+     * @param opcode The opcode
+     * @param parser The parser for the instruction
+     * @return Whether or not the registration succeeded
+     */
+    bool registerJType(const std::string& name, word_t opcode, std::unique_ptr<InstructionParser> parser);
+
+    /**
      * Registers an R-Type instruction with the instruction set. 
      * 
      * If the opcode is registered as R-type, and there is a duplicate funct,
@@ -71,6 +86,17 @@ public:
      * @return Whether or not the registration succeeded
      */
     bool registerRType(const std::string& name, word_t opcode, word_t funct, std::unique_ptr<InstructionParser> parser);
+
+
+    // MARK: -- Psuedo Registration Methods
+
+    /**
+     * Registers a psuedo instruction type (no opcode / name)
+     * @param name The name
+     * @param parser The parser
+     * @return Whether or not the registration succeeded
+     */
+    bool registerPsuedoType(const std::string& name, std::unique_ptr<InstructionParser> parser);
 
 
     // MARK: -- Getter Methods

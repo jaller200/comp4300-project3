@@ -8,6 +8,7 @@
 Instruction ITypeInstructionParser::parse(const std::string& line) const {
 
     Instruction instr;
+    instr.setImmediate(0x64);
     instr.setOpcode(0xA);
     instr.setType(InstructionType::I_FORMAT);
     return instr;
