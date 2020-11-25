@@ -25,7 +25,7 @@ class InstructionSet {
 public:
 
     // MARK: -- Construction
-    InstructionSet() = default;
+    InstructionSet();
     ~InstructionSet() = default;
 
 
@@ -48,6 +48,16 @@ public:
      */
     bool registerRType(const std::string& name, word_t opcode, word_t funct, std::unique_ptr<InstructionParser> parser);
 
+
+    // MARK: -- Getter Methods
+
+    /**
+     * Returns the instruction type for an opcode
+     * @param opcode The opcode
+     * @return The instruction type, or UNKNOWN
+     */
+    InstructionType getType(word_t opcode) const;
+
 private:
 
     // MARK: -- Private Variables;
@@ -56,7 +66,7 @@ private:
     std::unordered_map<std::string, hword_t> m_mapInstructions;
 
     /** A vector matching an instruction opcode only to a types. */
-    std::array<InstructionType, Instruction::LIMIT_OPCODE+1> m_vecOpcodeType;
+    std::array<InstructionType, Instruction::LIMIT_OPCODE+1> m_arrOpcodeType;
 
     /** A map correlating an instruction opcode/funct pair to a parser. */
     std::unordered_map<hword_t, std::unique_ptr<InstructionParser>> m_mapParsers;

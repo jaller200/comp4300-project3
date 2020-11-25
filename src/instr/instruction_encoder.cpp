@@ -1,5 +1,6 @@
 #include "instr/instruction_encoder.hpp"
 
+#include "exception/illegal_encode_error.hpp"
 #include "instr/instruction_type.hpp"
 
 // Encodes an instruction
@@ -42,8 +43,9 @@ Instruction::instr_t InstructionEncoder::encode(const Instruction& instr) {
         }
 
         // Other
-        case InstructionType::UNKNOWN:
-            break;
+        default: {
+            throw IllegalEncodeError("Unable to properly encode PSUEDO or UNKNOWN instruction!");
+        }
     }
 
     return output;

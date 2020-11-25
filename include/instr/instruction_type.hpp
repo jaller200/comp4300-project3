@@ -9,7 +9,8 @@ enum class InstructionType {
     R_FORMAT,       // General, most common type for arithmetic instructions
     I_FORMAT,       // Instructions that use an immediate value
     J_FORMAT,       // Jump instructions
+    PSUEDO,         // Psuedo instructions
     
     // Other / Unknown Formats
-    UNKNOWN,        // Unknown instructon (0xFFFFFFFF)
+    UNKNOWN         // Unknown instructon (value is not known, 0xFFFFFFFF)
 };

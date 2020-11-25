@@ -6,6 +6,7 @@
 
 // MARK: -- Upper / Lower Case Methods
 
+// Converts a string to lower case
 std::string StringUtils::toLowerCase(std::string str) {
 
     // Convert the string

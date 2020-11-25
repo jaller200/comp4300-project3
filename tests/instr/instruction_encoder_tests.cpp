@@ -1,8 +1,11 @@
 #include "catch.hpp"
 
+#include "exception/illegal_encode_error.hpp"
 #include "instr/instruction.hpp"
 #include "instr/instruction_encoder.hpp"
 #include "instr/instruction_type.hpp"
+
+#include <exception>
 
 /**
  * Method: InstructionEncoder::encode(..)
@@ -30,16 +33,17 @@
  *      instruction with j-type set and minimum fields for just j-type, non-zero otherwise (corner case)
  *      instruction with j-type set and maximum fields (edge case)
  *      instruction with j-type set and minimum fields (edge case)
- *      instruction with unknown type set and non-zero fields
- *      instruction with unknown type set and maximum fields (edge case)
- *      instruction with unknown type set and minimum fields (edge case)
  * 
  * Valid Outputs:
  *      All tests return valid 32-bit non-zero integers for r-type, i-type, and j-type
  *      All tests for unknown type return 0x00
  * 
  * Invalid Tests:
- *      None
+ *      instruction with psudeo type set
+ *      instruction with unknown type set
+ * 
+ * Invalid Outputs:
+ *      Both cases throw an IllegalEncodeError
  */
 TEST_CASE("Encode method properly encodes instruction structure to 32-bit value") {
 
@@ -304,55 +308,22 @@ TEST_CASE("Encode method properly encodes instruction structure to 32-bit value"
     }
 
 
-    // MARK: -- Unknown Type
-    SECTION("Unknown type instructions with non-zero fields is properly encoded") {
+    // MARK: -- Psuedo / Unknown Type
+    SECTION("Psuedo instructions throw an encoding error") {
 
         Instruction instr;
-        instr.setType(InstructionType::UNKNOWN);
-        instr.setAddr(10);
-        instr.setFunct(10);
-        instr.setImmediate(10);
+        instr.setType(InstructionType::PSUEDO);
         instr.setOpcode(10);
-        instr.setRd(10);
-        instr.setRs(10);
-        instr.setRt(10);
-        instr.setShamt(10);
 
-        Instruction::instr_t expectedOutput = 0x00000000;
-        REQUIRE(InstructionEncoder::encode(instr) == expectedOutput);
+        REQUIRE_THROWS_AS(InstructionEncoder::encode(instr), IllegalEncodeError);
     }
 
-    SECTION("Unknown type instructions with all maximum fields is properly encoded") {
+    SECTION("Unknown instructions throw an encoding error") {
 
         Instruction instr;
         instr.setType(InstructionType::UNKNOWN);
-        instr.setAddr(67108863);
-        instr.setFunct(63);
-        instr.setImmediate(65535);
-        instr.setOpcode(63);
-        instr.setRd(31);
-        instr.setRs(31);
-        instr.setRt(31);
-        instr.setShamt(31);
+        instr.setOpcode(11);
 
-        Instruction::instr_t expectedOutput = 0x00000000;
-        REQUIRE(InstructionEncoder::encode(instr) == expectedOutput);
-    }
-
-    SECTION("Unknown type instructions with all minimum fields is properly encoded") {
-
-        Instruction instr;
-        instr.setType(InstructionType::UNKNOWN);
-        instr.setAddr(0);
-        instr.setFunct(0);
-        instr.setImmediate(0);
-        instr.setOpcode(0);
-        instr.setRd(0);
-        instr.setRs(0);
-        instr.setRt(0);
-        instr.setShamt(0);
-
-        Instruction::instr_t expectedOutput = 0x00000000;
-        REQUIRE(InstructionEncoder::encode(instr) == expectedOutput);
+        REQUIRE_THROWS_AS(InstructionEncoder::encode(instr), IllegalEncodeError);
     }
 }
