@@ -13,6 +13,11 @@ InstructionSet::InstructionSet() {
 
 // MARK: -- Registration Methods
 
+// Registers an I-type instruction
+bool InstructionSet::registerIType(const std::string& name, word_t opcode, std::unique_ptr<InstructionParser> parser) {
+    return this->registerInstruction(name, opcode, 0, InstructionType::I_FORMAT, std::move(parser));
+}
+
 // Registers an R-type instruction.
 bool InstructionSet::registerRType(const std::string& name, word_t opcode, word_t funct, std::unique_ptr<InstructionParser> parser) {
     return this->registerInstruction(name, opcode, funct, InstructionType::R_FORMAT, std::move(parser));

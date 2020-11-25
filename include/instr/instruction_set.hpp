@@ -40,13 +40,29 @@ public:
     // MARK: -- Registration Methods
 
     /**
+     * Registers an I-Type instruction with the instruction set.
+     * If the opcode is registered to another type, this will fail.
+     * 
+     * In addition, the name will automatically be converted to lower case.
+     * If there is a duplicate name found, or the name contains whitespace, this
+     * returns false.
+     * 
+     * @param name The name
+     * @param opcode The opcode
+     * @param parser The parser for the instruction
+     * @return Whether or not the registration succeeded
+     */
+    bool registerIType(const std::string& name, word_t opcode, std::unique_ptr<InstructionParser> parser);
+
+    /**
      * Registers an R-Type instruction with the instruction set. 
      * 
      * If the opcode is registered as R-type, and there is a duplicate funct,
      * or if the opcode is registered as another type, this returns false.
      * 
      * In addition, the name is automatically converted to lower case. If there
-     * is a duplicate name found, the function returns false.
+     * is a duplicate name found, or the name contains whitespace, the function 
+     * returns false.
      * 
      * @param name The name
      * @param opcode The opcode
