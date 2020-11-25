@@ -5,11 +5,15 @@
 // MARK: -- Inherited Parse Methods
 
 // Parses a line
-Instruction JTypeInstructionParser::parse(const std::string& line) const {
+std::vector<Instruction> JTypeInstructionParser::parse(const std::string& line) const {
+
+    std::vector<Instruction> instructions;
 
     Instruction instr;
     instr.setAddr(0x64);
     instr.setOpcode(0xA);
     instr.setType(InstructionType::J_FORMAT);
-    return instr;
+    instructions.emplace_back(instr);
+
+    return instructions;
 }

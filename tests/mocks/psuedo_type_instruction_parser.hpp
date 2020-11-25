@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <vector>
 
 #include "instr/instruction_parser.hpp"
 #include "instr/instruction.hpp"
@@ -9,12 +8,12 @@
 /**
  * A simple mock class for an instruction parser.
  */
-class JTypeInstructionParser: public InstructionParser {
+class PsuedoTypeInstructionParser: public InstructionParser {
 public:
 
     // MARK: -- Construction
-    JTypeInstructionParser() = default;
-    ~JTypeInstructionParser() = default;
+    PsuedoTypeInstructionParser() = default;
+    ~PsuedoTypeInstructionParser() = default;
 
 
     // MARK: -- Inherited Parsing Methods
@@ -25,7 +24,7 @@ public:
      * For this parser, everything is set to 0 except:
      * 
      *  opcode      = 10    0xA
-     *  address     = 100   0x64
+     *  immediate   = 100   0x64
      * 
      * These values will help us properly test our code
      */

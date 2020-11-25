@@ -7,6 +7,8 @@
 #include "mocks/jtype_instruction_parser.hpp"
 #include "mocks/rtype_instruction_parser.hpp"
 
+// MARK: -- Normal Registration Methods
+
 /**
  * Method: InstructionSet::registerIType(..)
  * Desired confidence level: Boundary value analysis
@@ -511,4 +513,42 @@ TEST_CASE("Instruction set is properly able to register R-Type instructions") {
         REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
         REQUIRE(instrSet.getType("test") == InstructionType::UNKNOWN);
     }
+}
+
+
+
+// MARK: -- Psuedo Registration Methods
+
+/**
+ * Method: InstructionSet::registerPsuedoType(..)
+ * Desired Confidence Level: Boundary value analysis
+ * 
+ * Inputs:
+ *      name        -> A string value without whitespace or delimiter, will be converted to lowercase, unvalidated
+ *      parser      -> A unique_ptr to a parser for this specific instruction, non-null, unvalidated
+ * 
+ * Outputs:
+ *      The function returns true if the instruction was registered successfully, otherwise it
+ *          returns false
+ * 
+ * Valid Tests:
+ *      name        -> nominal value
+ *                     some uppercase letters
+ *      parser      -> nominal value
+ * 
+ * Invalid Tests:
+ *      name string is empty
+ *      name string is just whitespace
+ *      name string with whitespace and ASCII
+ *      name string with newline
+ *      name string with tab
+ *      parser null
+ *      attempting to register another psuedo instruction with the same name
+ *      attempting to register another type with the same name
+ */
+TEST_CASE("Instruction set is properly able to register psuedo-instructions") {
+
+    // MARK: -- Valid Tests
+
+    //SECTION("Registering ")
 }

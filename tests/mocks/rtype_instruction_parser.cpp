@@ -5,11 +5,15 @@
 // MARK: -- Inherited Parse Methods
 
 // Parses a line
-Instruction RTypeInstructionParser::parse(const std::string& line) const {
+std::vector<Instruction> RTypeInstructionParser::parse(const std::string& line) const {
+
+    std::vector<Instruction> instructions;
 
     Instruction instr;
     instr.setFunct(0xB);
     instr.setOpcode(0xA);
     instr.setType(InstructionType::R_FORMAT);
-    return instr;
+    instructions.emplace_back(instr);
+
+    return instructions;
 }

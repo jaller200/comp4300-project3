@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "instr/instruction_parser.hpp"
 #include "instr/instruction.hpp"
@@ -28,5 +29,5 @@ public:
      * 
      * These values will help us properly test our code
      */
-    Instruction parse(const std::string& line) const;
+    std::vector<Instruction> parse(const std::string& line) const;
 };
