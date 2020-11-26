@@ -1,6 +1,8 @@
 #pragma once
 
 #include <array>
+#include <string>
+#include <unordered_map>
 
 #include "types.hpp"
 
@@ -19,6 +21,23 @@ public:
     // MARK: -- Construction
     RegisterBank();
     ~RegisterBank() = default;
+
+
+    // MARK: -- Static Conversion Methods
+
+    /**
+     * Converts a string such a "$0" or "$zero" to a register value.
+     * 
+     * All registers MUST beging with "$". If the string does not, this will
+     * return -1.
+     * 
+     * In addition, if the name is not found, or the number is out of bounds,
+     * this will also return -1.
+     * 
+     * @param str The string to convert
+     * @return The register (0-31) on success, -1 otherwise
+     */
+    static sword_t getRegister(const std::string& str);
 
 
     // MARK: -- Register I/O Methods
@@ -46,6 +65,8 @@ public:
     bool writeRegister(word_t num, word_t value);
 
 private:
+
+    // MARK: -- Private Variables
 
     /** The register bank. */
     std::array<word_t, NUM_REGISTERS> m_arrRegisters;

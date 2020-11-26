@@ -7,6 +7,9 @@
 #include "instr/instruction_parser.hpp"
 #include "types.hpp"
 
+/**
+ * A parser for the ADD instruction (opcode 0, funct 32)
+ */
 class AddParser: public InstructionParser {
 public:
 
@@ -32,4 +35,4 @@ public:
      * @return A vector with a single instruction (opcode 0, funct 32)
      */
     std::vector<Instruction> parse(const std::string& line) const;
-}
+};
