@@ -28,6 +28,7 @@ file(GLOB SPDLOG_SOURCES "3rdparty/spdlog/*.cpp")
 # Library Sources
 file(GLOB LIB_SOURCES "src/*.cpp"
                         "src/instr/*.cpp"
+                        "src/instr/parsers/*.cpp"
                         "src/memory/*.cpp"
                         "src/registers/*.cpp"
                         "src/utils/*.cpp")
@@ -38,6 +39,7 @@ file(GLOB APP_SOURCES "app/main.cpp")
 # Test Sources
 file(GLOB TEST_SOURCES "tests/*.cpp"
                         "tests/instr/*.cpp"
+                        "tests/instr/parsers/*.cpp"
                         "tests/memory/*.cpp"
                         "tests/mocks/*.cpp"
                         "tests/registers/*.cpp"
