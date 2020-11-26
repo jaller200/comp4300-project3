@@ -102,10 +102,10 @@ TEST_CASE("Register bank can be written to / read from properly") {
     SECTION("Writing and reading a register far outside the boundary fails") {
 
         RegisterBank rb;
-        REQUIRE_FALSE(rb.writeRegister(32, 100));
+        REQUIRE_FALSE(rb.writeRegister(64, 100));
 
         word_t value = 100;
-        REQUIRE_FALSE(rb.readRegister(32, value));
+        REQUIRE_FALSE(rb.readRegister(64, value));
         REQUIRE(value == 100);
     }
 }
