@@ -3,6 +3,7 @@
 // MARK: -- Construction
 
 // Constructs the simulator
-Simulator::Simulator(const Memory& memory) 
-: m_memory(memory)
+Simulator::Simulator(std::unique_ptr<Memory> memory, std::unique_ptr<RegisterBank> registerBank)
+: m_memory(std::move(memory))
+, m_registerBank(std::move(registerBank))
 { }

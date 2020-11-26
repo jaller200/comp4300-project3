@@ -1,8 +1,9 @@
 #pragma once
 
-#include <cstddef>
+#include <memory>
 
 #include "memory/memory.hpp"
+#include "registers/register_bank.hpp"
 
 /**
  * The main simulator class. Responsible for opening, running, and
@@ -16,8 +17,9 @@ public:
     /**
      * Constructor.
      * @param memory The memory for the simulator to use
+     * @param registerBank The register bank to use
      */
-    Simulator(const Memory& memory);
+    Simulator(std::unique_ptr<Memory> memory, std::unique_ptr<RegisterBank> registerBank);
 
     /**
      * Destructor
@@ -29,5 +31,8 @@ private:
     // MARK: -- Private Variables
 
     /** The memory of the program. */
-    Memory m_memory;
+    std::unique_ptr<Memory> m_memory;
+
+    /** The register bank of the program. */
+    std::unique_ptr<RegisterBank> m_registerBank;
 };
