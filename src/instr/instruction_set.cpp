@@ -64,13 +64,13 @@ bool InstructionSet::registerPsuedoType(const std::string& name, std::unique_ptr
     // Now create our metadata
     std::shared_ptr<InstructionMetadata> metadata(new InstructionMetadata());
     metadata->ptrParser = std::move(parser);
-    metadata->strName = name;
+    metadata->strName = instrName;
     metadata->type = InstructionType::PSUEDO;
     metadata->wFunct = -1;
     metadata->wOpcode = -1;
 
     // Now register everything
-    this->m_mapNameToMetadata[name] = metadata;
+    this->m_mapNameToMetadata[instrName] = metadata;
     return true;
 }
 

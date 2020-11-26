@@ -5,6 +5,7 @@
 #include "instr/instruction_set.hpp"
 #include "mocks/itype_instruction_parser.hpp"
 #include "mocks/jtype_instruction_parser.hpp"
+#include "mocks/psuedo_type_instruction_parser.hpp"
 #include "mocks/rtype_instruction_parser.hpp"
 
 // MARK: -- Normal Registration Methods
@@ -104,6 +105,7 @@ TEST_CASE("Instruction set is properly able to register I-Type instructions") {
         REQUIRE(instrSet.registerIType("TeSt", 10, std::move(parser)) == true);
         REQUIRE(instrSet.getType(10) == InstructionType::I_FORMAT);
         REQUIRE(instrSet.getType("test") == InstructionType::I_FORMAT);
+        REQUIRE(instrSet.getType("TeSt") == InstructionType::I_FORMAT);
     }
 
 
@@ -262,6 +264,7 @@ TEST_CASE("Instruction set is properly able to register J-Type instructions") {
         REQUIRE(instrSet.registerJType("TeSt", 10, std::move(parser)) == true);
         REQUIRE(instrSet.getType(10) == InstructionType::J_FORMAT);
         REQUIRE(instrSet.getType("test") == InstructionType::J_FORMAT);
+        REQUIRE(instrSet.getType("TeSt") == InstructionType::J_FORMAT);
     }
 
 
@@ -443,6 +446,7 @@ TEST_CASE("Instruction set is properly able to register R-Type instructions") {
         REQUIRE(instrSet.registerRType("TeSt", 10, 63, std::move(parser)) == true);
         REQUIRE(instrSet.getType(10) == InstructionType::R_FORMAT);
         REQUIRE(instrSet.getType("test") == InstructionType::R_FORMAT);
+        REQUIRE(instrSet.getType("TeSt") == InstructionType::R_FORMAT);
     }
 
 
@@ -550,5 +554,34 @@ TEST_CASE("Instruction set is properly able to register psuedo-instructions") {
 
     // MARK: -- Valid Tests
 
-    //SECTION("Registering ")
+    SECTION("Registering a nominal psuedo instruction works properly") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<PsuedoTypeInstructionParser> parser(new PsuedoTypeInstructionParser());
+        REQUIRE(instrSet.registerPsuedoType("test", std::move(parser)) == true);
+        REQUIRE(instrSet.getType("test") == InstructionType::PSUEDO);
+
+        SECTION("Registering another psuedo instruction with the same name fails") {
+
+            std::unique_ptr<PsuedoTypeInstructionParser> parser2(new PsuedoTypeInstructionParser());
+            REQUIRE_FALSE(instrSet.registerPsuedoType("test", std::move(parser2)));
+            REQUIRE(instrSet.getType("test") == InstructionType::PSUEDO);
+        }
+
+        SECTION("Registering an R-Type instruction with the same name fails") {
+
+            std::unique_ptr<RTypeInstructionParser> parser2(new RTypeInstructionParser());
+            REQUIRE_FALSE(instrSet.registerRType("test", 10, 11, std::move(parser2)));
+            REQUIRE(instrSet.getType("test") == InstructionType::PSUEDO);
+        }
+    }
+
+    SECTION("Registering a psuedo instruction with some uppercase letters in the name works properly") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<PsuedoTypeInstructionParser> parser(new PsuedoTypeInstructionParser());
+        REQUIRE(instrSet.registerPsuedoType("tEsT", std::move(parser)) == true);
+        REQUIRE(instrSet.getType("test") == InstructionType::PSUEDO);
+        REQUIRE(instrSet.getType("tEsT") == InstructionType::PSUEDO);
+    }
 }

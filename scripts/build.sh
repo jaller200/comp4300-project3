@@ -7,8 +7,8 @@ mkdir -p lib
 
 # Enter into the build directory and run CMake
 cd build
-cmake ..
-make
+cmake .. || exit 1
+make || exit 1
 
 # Now copy all lib files
 cd ..
