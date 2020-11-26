@@ -117,6 +117,7 @@ TEST_CASE("Instruction set is properly able to register I-Type instructions") {
         std::unique_ptr<InstructionParser> parser(new ITypeInstructionParser());
         REQUIRE_FALSE(instrSet.registerIType("", 10, std::move(parser)));
         REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("") == InstructionType::UNKNOWN);
     }
 
     SECTION("Registering an I-Type instruction with just whitespace for a name fails") {
@@ -125,6 +126,7 @@ TEST_CASE("Instruction set is properly able to register I-Type instructions") {
         std::unique_ptr<InstructionParser> parser(new ITypeInstructionParser());
         REQUIRE_FALSE(instrSet.registerIType("     ", 10, std::move(parser)));
         REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("     ") == InstructionType::UNKNOWN);
     }
 
     SECTION("Registering an I-Type instruction with whitespace and ASCII fails") {
@@ -133,6 +135,7 @@ TEST_CASE("Instruction set is properly able to register I-Type instructions") {
         std::unique_ptr<InstructionParser> parser(new ITypeInstructionParser());
         REQUIRE_FALSE(instrSet.registerIType("   test", 10, std::move(parser)));
         REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("   test") == InstructionType::UNKNOWN);
     }
 
     SECTION("Registering an I-Type instruction with a newline fails") {
@@ -141,6 +144,7 @@ TEST_CASE("Instruction set is properly able to register I-Type instructions") {
         std::unique_ptr<InstructionParser> parser(new ITypeInstructionParser());
         REQUIRE_FALSE(instrSet.registerIType("\ntest", 10, std::move(parser)));
         REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("\ntest") == InstructionType::UNKNOWN);
     }
 
     SECTION("Registering an I-Type instruction with a tab fails") {
@@ -149,6 +153,7 @@ TEST_CASE("Instruction set is properly able to register I-Type instructions") {
         std::unique_ptr<InstructionParser> parser(new ITypeInstructionParser());
         REQUIRE_FALSE(instrSet.registerIType("\ttest", 10, std::move(parser)));
         REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("\ttest") == InstructionType::UNKNOWN);
     }
 
     SECTION("Registering an I-Type instruction with an opcode above max value fails") {
@@ -276,6 +281,7 @@ TEST_CASE("Instruction set is properly able to register J-Type instructions") {
         std::unique_ptr<InstructionParser> parser(new JTypeInstructionParser());
         REQUIRE_FALSE(instrSet.registerJType("", 10, std::move(parser)));
         REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("") == InstructionType::UNKNOWN);
     }
 
     SECTION("Registering an J-Type instruction with just whitespace for a name fails") {
@@ -284,6 +290,7 @@ TEST_CASE("Instruction set is properly able to register J-Type instructions") {
         std::unique_ptr<InstructionParser> parser(new JTypeInstructionParser());
         REQUIRE_FALSE(instrSet.registerJType("     ", 10, std::move(parser)));
         REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("     ") == InstructionType::UNKNOWN);
     }
 
     SECTION("Registering an J-Type instruction with whitespace and ASCII fails") {
@@ -292,6 +299,7 @@ TEST_CASE("Instruction set is properly able to register J-Type instructions") {
         std::unique_ptr<InstructionParser> parser(new JTypeInstructionParser());
         REQUIRE_FALSE(instrSet.registerJType("   test", 10, std::move(parser)));
         REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("   test") == InstructionType::UNKNOWN);
     }
 
     SECTION("Registering an J-Type instruction with a newline fails") {
@@ -300,6 +308,7 @@ TEST_CASE("Instruction set is properly able to register J-Type instructions") {
         std::unique_ptr<InstructionParser> parser(new JTypeInstructionParser());
         REQUIRE_FALSE(instrSet.registerJType("\ntest", 10, std::move(parser)));
         REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("\ntest") == InstructionType::UNKNOWN);
     }
 
     SECTION("Registering an J-Type instruction with a tab fails") {
@@ -308,6 +317,7 @@ TEST_CASE("Instruction set is properly able to register J-Type instructions") {
         std::unique_ptr<InstructionParser> parser(new JTypeInstructionParser());
         REQUIRE_FALSE(instrSet.registerJType("\ttest", 10, std::move(parser)));
         REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("\ttest") == InstructionType::UNKNOWN);
     }
 
     SECTION("Registering an J-Type instruction with an opcode above max value fails") {
@@ -458,6 +468,7 @@ TEST_CASE("Instruction set is properly able to register R-Type instructions") {
         std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
         REQUIRE_FALSE(instrSet.registerRType("", 10, 11, std::move(parser)));
         REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("") == InstructionType::UNKNOWN);
     }
 
     SECTION("Registering an R-Type instruction with just whitespace for a name fails") {
@@ -466,6 +477,7 @@ TEST_CASE("Instruction set is properly able to register R-Type instructions") {
         std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
         REQUIRE_FALSE(instrSet.registerRType("     ", 10, 11, std::move(parser)));
         REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("     ") == InstructionType::UNKNOWN);
     }
 
     SECTION("Registering an R-Type instruction with whitespace and ASCII fails") {
@@ -474,6 +486,7 @@ TEST_CASE("Instruction set is properly able to register R-Type instructions") {
         std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
         REQUIRE_FALSE(instrSet.registerRType("   test", 10, 11, std::move(parser)));
         REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("   test") == InstructionType::UNKNOWN);
     }
 
     SECTION("Registering an R-Type instruction with a newline fails") {
@@ -482,6 +495,7 @@ TEST_CASE("Instruction set is properly able to register R-Type instructions") {
         std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
         REQUIRE_FALSE(instrSet.registerRType("\ntest", 10, 11, std::move(parser)));
         REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("\ntest") == InstructionType::UNKNOWN);
     }
 
     SECTION("Registering an R-Type instruction with a tab fails") {
@@ -490,6 +504,7 @@ TEST_CASE("Instruction set is properly able to register R-Type instructions") {
         std::unique_ptr<InstructionParser> parser(new RTypeInstructionParser());
         REQUIRE_FALSE(instrSet.registerRType("\ttest", 10, 11, std::move(parser)));
         REQUIRE(instrSet.getType(10) == InstructionType::UNKNOWN);
+        REQUIRE(instrSet.getType("\ttest") == InstructionType::UNKNOWN);
     }
 
     SECTION("Registering an R-Type instruction with an opcode above max value fails") {
@@ -583,5 +598,55 @@ TEST_CASE("Instruction set is properly able to register psuedo-instructions") {
         REQUIRE(instrSet.registerPsuedoType("tEsT", std::move(parser)) == true);
         REQUIRE(instrSet.getType("test") == InstructionType::PSUEDO);
         REQUIRE(instrSet.getType("tEsT") == InstructionType::PSUEDO);
+    }
+
+    
+    // MARK: -- Invalid Tests
+
+    SECTION("Registering a psuedo instruction with an empty name fails") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<PsuedoTypeInstructionParser> parser(new PsuedoTypeInstructionParser());
+        REQUIRE_FALSE(instrSet.registerPsuedoType("", std::move(parser)));
+        REQUIRE(instrSet.getType("") == InstructionType::UNKNOWN);
+    }
+
+    SECTION("Registering a psuedo instruction with whitespace fails") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<PsuedoTypeInstructionParser> parser(new PsuedoTypeInstructionParser());
+        REQUIRE_FALSE(instrSet.registerPsuedoType("    ", std::move(parser)));
+        REQUIRE(instrSet.getType("    ") == InstructionType::UNKNOWN);
+    }
+
+    SECTION("Registering a psuedo instruction with whitespace and ASCII fails") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<PsuedoTypeInstructionParser> parser(new PsuedoTypeInstructionParser());
+        REQUIRE_FALSE(instrSet.registerPsuedoType("   test", std::move(parser)));
+        REQUIRE(instrSet.getType("   test") == InstructionType::UNKNOWN);
+    }
+
+    SECTION("Registering a psuedo instruction with a newline fails") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<PsuedoTypeInstructionParser> parser(new PsuedoTypeInstructionParser());
+        REQUIRE_FALSE(instrSet.registerPsuedoType("\ntest", std::move(parser)));
+        REQUIRE(instrSet.getType("\ntest") == InstructionType::UNKNOWN);
+    }
+
+    SECTION("Registering a psuedo instruction with a tab fails") {
+
+        InstructionSet instrSet;
+        std::unique_ptr<PsuedoTypeInstructionParser> parser(new PsuedoTypeInstructionParser());
+        REQUIRE_FALSE(instrSet.registerPsuedoType("\ttest", std::move(parser)));
+        REQUIRE(instrSet.getType("\ttest") == InstructionType::UNKNOWN);
+    }
+
+    SECTION("Registering a psuedo instruction with a null parser fails") {
+
+        InstructionSet instrSet;
+        REQUIRE_FALSE(instrSet.registerPsuedoType("test", nullptr));
+        REQUIRE(instrSet.getType("test") == InstructionType::UNKNOWN);
     }
 }
