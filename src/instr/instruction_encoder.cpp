@@ -3,6 +3,52 @@
 #include "exception/illegal_encode_error.hpp"
 #include "instr/instruction_type.hpp"
 
+Instruction InstructionEncoder::decode(Instruction::instr_t instr, InstructionType type) {
+
+    // Create our instruction structure
+    Instruction instruction;
+
+    // Get the opcode
+    instruction.setOpcode(instr & ((1 << 6) - 1));
+
+    // Now the rest needs to be handled per-type
+    switch (type) {
+
+        // I-Type
+        case InstructionType::I_FORMAT: {
+
+            instruction.setRs((instr >> 6) & ((1 << 5) - 1));
+            instruction.setRt((instr >> 11) & ((1 << 5) - 1));
+            instruction.setImmediate((instr >> 16) & ((1 << 16) - 1));
+            break;
+        }
+
+        // J-Type
+        case InstructionType::J_FORMAT: {
+
+            instruction.setAddr((instr >> 6) & ((1 << 26) - 1));
+            break;
+        }
+
+        // R-Type
+        case InstructionType::R_FORMAT: {
+
+            instruction.setRs((instr >> 6) & ((1 << 5) - 1));
+            instruction.setRt((instr >> 11) & ((1 << 5) - 1));
+            instruction.setRd((instr >> 16) & ((1 << 5) - 1));
+            instruction.setShamt((instr >> 21) & ((1 << 5) - 1));
+            instruction.setFunct((instr >> 26) & ((1 << 6) - 1));
+            break;
+        }
+
+        default: {
+            throw IllegalEncodeError("Unable to properly decode PSUEDO or UNKNOWN instruction!");
+        }
+    }
+
+    return instruction;
+}
+
 // Encodes an instruction
 Instruction::instr_t InstructionEncoder::encode(const Instruction& instr) {
 

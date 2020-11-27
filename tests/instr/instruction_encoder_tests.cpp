@@ -8,6 +8,162 @@
 #include <exception>
 
 /**
+ * Method: InstructionEncoder::decode(..)
+ * Desired Confidence Level: boundary value analysis
+ * 
+ * Inputs:
+ *      instr       -> A 32-bit instruction value, mandatory, validated
+ *      type        -> An instruction type of R_FORMAT, I_FORMAT, J_FORMAT, mandatory, unvalidated
+ * 
+ * Outputs:
+ *      In the case of success, an instruction structure. Otherwise, an IllegalEncodeError is thrown
+ * 
+ * Valid Tests:
+ *      instruction with nominal R-Type
+ *      instruction with minimal R-Type bits (all 0s)
+ *      instruction with maximum R-Type bits (all 1s)
+ *      instruction with nominal I-Type
+ *      instruction with minimal I-Type bits (all 0s)
+ *      instruction with maximum I-Type bits (all 1s)
+ *      instruction with nominal J-Type
+ *      instruction with minimal J-Type bits (all 0s)
+ *      instruction with maximum J-Type bits (all 1s)
+ * 
+ * Valid Outputs:
+ *      All outputs should be valid instructions with the correct fields set
+ * 
+ * Invalid Tests:
+ *      instruction with psuedo type
+ *      instruction with unknown type
+ */
+TEST_CASE("Decode method properly decodes instructions") {
+
+    // MARK: -- Valid R-Type Tests
+
+    SECTION("Decoding a nominal R-Type instruction works properly") {
+        
+        Instruction::instr_t instr = 0x7A8D62CA;
+        Instruction output = InstructionEncoder::decode(instr, InstructionType::R_FORMAT);
+
+        REQUIRE(output.getOpcode() == 10);
+        REQUIRE(output.getRs() == 11);
+        REQUIRE(output.getRt() == 12);
+        REQUIRE(output.getRd() == 13);
+        REQUIRE(output.getShamt() == 20);
+        REQUIRE(output.getFunct() == 30);
+    }
+
+    SECTION("Decoding a minimal R-Type instruction works properly") {
+        
+        Instruction::instr_t instr = 0x00000000;
+        Instruction output = InstructionEncoder::decode(instr, InstructionType::R_FORMAT);
+
+        REQUIRE(output.getOpcode() == 0);
+        REQUIRE(output.getRs() == 0);
+        REQUIRE(output.getRt() == 0);
+        REQUIRE(output.getRd() == 0);
+        REQUIRE(output.getShamt() == 0);
+        REQUIRE(output.getFunct() == 0);
+    }
+
+    SECTION("Decoding a maximal R-Type instruction works properly") {
+        
+        Instruction::instr_t instr = 0xFFFFFFFF;
+        Instruction output = InstructionEncoder::decode(instr, InstructionType::R_FORMAT);
+
+        REQUIRE(output.getOpcode() == 63);
+        REQUIRE(output.getRs() == 31);
+        REQUIRE(output.getRt() == 31);
+        REQUIRE(output.getRd() == 31);
+        REQUIRE(output.getShamt() == 31);
+        REQUIRE(output.getFunct() == 63);
+    }
+
+
+    // MARK: -- Valid I-Type Tests
+
+    SECTION("Decoding a nominal I-Type instruction works properly") {
+        
+        // 0000000001100100 01100 01011 001010
+
+        Instruction::instr_t instr = 0x006462CA;
+        Instruction output = InstructionEncoder::decode(instr, InstructionType::I_FORMAT);
+
+        REQUIRE(output.getOpcode() == 10);
+        REQUIRE(output.getRs() == 11);
+        REQUIRE(output.getRt() == 12);
+        REQUIRE(output.getImmediate() == 100);
+    }
+
+    SECTION("Decoding a minimal I-Type instruction works properly") {
+        
+        Instruction::instr_t instr = 0x00000000;
+        Instruction output = InstructionEncoder::decode(instr, InstructionType::I_FORMAT);
+
+        REQUIRE(output.getOpcode() == 0);
+        REQUIRE(output.getRs() == 0);
+        REQUIRE(output.getRt() == 0);
+        REQUIRE(output.getImmediate() == 0);
+    }
+
+    SECTION("Decoding a nominal I-Type instruction works properly") {
+        
+        Instruction::instr_t instr = 0xFFFFFFFF;
+        Instruction output = InstructionEncoder::decode(instr, InstructionType::I_FORMAT);
+
+        REQUIRE(output.getOpcode() == 63);
+        REQUIRE(output.getRs() == 31);
+        REQUIRE(output.getRt() == 31);
+        REQUIRE(output.getImmediate() == 65535);
+    }
+
+
+    // MARK: -- Valid J-Type Tests
+
+    SECTION("Decoding a nominal J-Type instruction works properly") {
+        
+        Instruction::instr_t instr = 0x0000FA0A;
+        Instruction output = InstructionEncoder::decode(instr, InstructionType::J_FORMAT);
+
+        REQUIRE(output.getOpcode() == 10);
+        REQUIRE(output.getAddr() == 1000);
+    }
+
+    SECTION("Decoding a minimal J-Type instruction works properly") {
+        
+        Instruction::instr_t instr = 0x00000000;
+        Instruction output = InstructionEncoder::decode(instr, InstructionType::J_FORMAT);
+
+        REQUIRE(output.getOpcode() == 0);
+        REQUIRE(output.getAddr() == 0);
+    }
+
+    SECTION("Decoding a nominal J-Type instruction works properly") {
+        
+        Instruction::instr_t instr = 0xFFFFFFFF;
+        Instruction output = InstructionEncoder::decode(instr, InstructionType::J_FORMAT);
+
+        REQUIRE(output.getOpcode() == 63);
+        REQUIRE(output.getAddr() == 67108863);
+    }
+
+
+    // MARK: -- Invalid Tests
+    
+    SECTION("Decoding a psuedo instruction type fails") {
+
+        Instruction::instr_t instr = 0x19D55CAF;
+        REQUIRE_THROWS_AS(InstructionEncoder::decode(instr, InstructionType::PSUEDO), IllegalEncodeError);
+    }
+
+    SECTION("Decoding an unknown instruction type fails") {
+
+        Instruction::instr_t instr = 0x19D55CAF;
+        REQUIRE_THROWS_AS(InstructionEncoder::decode(instr, InstructionType::UNKNOWN), IllegalEncodeError);
+    }
+}
+
+/**
  * Method: InstructionEncoder::encode(..)
  * Desired Confidence Level: edge and corner values analysis
  * 

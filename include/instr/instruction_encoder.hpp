@@ -11,6 +11,19 @@ class InstructionEncoder {
 public:
 
     /**
+     * Decodes an 32-bit instruction value based on the instruction type.
+     * 
+     * Since the only decodable types are R_FORMAT, I_FORMAT, and J_FORMAT, all
+     * other types will throw an illegal encoding error.
+     * 
+     * @param instr The 32-bit instruction
+     * @param type The instruction type to decode as
+     * @throw IllegalEncodeError If we try to decode an instruction with an invalid format
+     * @return The instruction structure
+     */
+    static Instruction decode(Instruction::instr_t instr, InstructionType type);
+
+    /**
      * Encodes an instruction structure into a 32-bit instruction value.
      * 
      * Note that this method uses the Instruction::getType() field in order to determine
