@@ -1,7 +1,11 @@
 #pragma once
 
 #include <cstdint>
+#include <cstring>
 #include <string>
+
+// MARK: -- Constant Definitions
+#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
 // MARK: -- Numerical Data Types
 using byte_t = uint8_t;
