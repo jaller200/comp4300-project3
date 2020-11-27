@@ -1,5 +1,6 @@
 #include "registers/register_bank.hpp"
 
+#include <algorithm>
 #include <string>
 #include <unordered_map>
 
