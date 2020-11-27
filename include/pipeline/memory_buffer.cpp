@@ -6,17 +6,17 @@
  * A buffer between the memory and write back stages
  * of the pipeline.
  */
-struct MEMWBBuffer {
+struct MemoryBuffer {
 
-    /** The output from the ALU. */
-    word_t wALUOut;
-
-    /** The memory data register. */
-    word_t wMDR;
+    /** The output of the memory if applicable. */
+    word_t wMemoryOutput;
 
     /** The opcode. */
     word_t wOpcode;
 
+    /** The output of the ALU if applicable. */
+    word_t wOutput;
+
     /** The destination register number. */
-    word_t wRd;
+    word_t wRegDest;
 };

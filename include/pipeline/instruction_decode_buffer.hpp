@@ -20,7 +20,7 @@ struct InstructionDecodeBuffer {
     /** The funct for any R-Type instructions. */
     word_t wFunct;
 
-    /** An immediate (if needed). Can be an address, offset, value, etc. */
+    /** An immediate (if needed). Can be an address, shift amount, offset, value, etc. */
     word_t wImmediate;
 
     /** The opcode. */
