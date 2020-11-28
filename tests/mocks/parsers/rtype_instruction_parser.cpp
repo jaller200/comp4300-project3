@@ -1,4 +1,4 @@
-#include "mocks/rtype_instruction_parser.hpp"
+#include "mocks/parsers/rtype_instruction_parser.hpp"
 
 #include "instr/instruction_type.hpp"
 

@@ -17,6 +17,12 @@ public:
     using addr_t = word_t;                  // An address reference    
 
 
+    // MARK: -- Public Constants
+    
+    /** The start of the userland memory section. */
+    static constexpr addr_t MEM_USER_START = 0x1000;
+
+
     // MARK: -- Initialisation
     Memory(size_t dataSize, size_t textSize);
     ~Memory() = default;
@@ -95,12 +101,6 @@ public:
     size_t getTotalSize() const;
 
 private:
-
-    // MARK: -- Private Constants
-    
-    /** The start of the userland memory section. */
-    static constexpr addr_t MEM_USER_START = 0x1000;
-
 
     // MARK: -- Private Variables
 

@@ -1,8 +1,13 @@
 #pragma once
 
+#include "instr/instruction_handler.hpp"
 #include "instr/instruction_metadata.hpp"
 #include "instr/instruction_parser.hpp"
 #include "instr/instruction_type.hpp"
+#include "pipeline/execution_buffer.hpp"
+#include "pipeline/instruction_decode_buffer.hpp"
+#include "pipeline/instruction_fetch_buffer.hpp"
+#include "pipeline/memory_buffer.hpp"
 #include "types.hpp"
 
 #include <array>
@@ -31,10 +36,28 @@ public:
     using instr_id_t = hword_t;
 
 
-
     // MARK: -- Construction
     InstructionSet();
     ~InstructionSet() = default;
+
+
+    // MARK: -- Getter Methods
+
+    /**
+     * Returns an instruction handler for the opcode/funct pair.
+     * @param opcode The opcode
+     * @param funct The function
+     * @return A raw pointer to the instruction handler, or nullptr if not found
+     */
+    InstructionHandler * getInstructionHandler(word_t opcode, word_t funct) const;
+
+    /**
+     * Returns an instruction parser for the name. Trims and converts the
+     * name to lower case.
+     * @param name The name
+     * @return A raw pointer to the instruction parser, or nullptr if not found
+     */
+    InstructionParser * getInstructionParser(const std::string& name) const;
 
 
     // MARK: -- Registration Methods
@@ -50,9 +73,10 @@ public:
      * @param name The name
      * @param opcode The opcode
      * @param parser The parser for the instruction
+     * @param handler The handler for the instruction
      * @return Whether or not the registration succeeded
      */
-    bool registerIType(const std::string& name, word_t opcode, std::unique_ptr<InstructionParser> parser);
+    bool registerIType(const std::string& name, word_t opcode, std::unique_ptr<InstructionParser> parser, std::unique_ptr<InstructionHandler> handler);
 
     /**
      * Registers a J-Type instruction with the instruction set.
@@ -65,9 +89,10 @@ public:
      * @param name The name
      * @param opcode The opcode
      * @param parser The parser for the instruction
+     * @param handler The handler for the instruction
      * @return Whether or not the registration succeeded
      */
-    bool registerJType(const std::string& name, word_t opcode, std::unique_ptr<InstructionParser> parser);
+    bool registerJType(const std::string& name, word_t opcode, std::unique_ptr<InstructionParser> parser, std::unique_ptr<InstructionHandler> handler);
 
     /**
      * Registers an R-Type instruction with the instruction set. 
@@ -83,9 +108,10 @@ public:
      * @param opcode The opcode
      * @param funct The function
      * @param parser The parser for the instruction
+     * @param handler The handler for the instruction
      * @return Whether or not the registration succeeded
      */
-    bool registerRType(const std::string& name, word_t opcode, word_t funct, std::unique_ptr<InstructionParser> parser);
+    bool registerRType(const std::string& name, word_t opcode, word_t funct, std::unique_ptr<InstructionParser> parser, std::unique_ptr<InstructionHandler> handler);
 
 
     // MARK: -- Psuedo Registration Methods
@@ -139,7 +165,8 @@ private:
      * @param funct The funct to register with
      * @param type The type to register with
      * @param parser The parser to register with
+     * @param handler The handler to register with
      * @return True if successfully registered, false if the name, opcode, funct, or metadata are invalid or null
      */
-    bool registerInstruction(const std::string& name, word_t opcode, word_t funct, InstructionType type, std::unique_ptr<InstructionParser> parser);
+    bool registerInstruction(const std::string& name, word_t opcode, word_t funct, InstructionType type, std::unique_ptr<InstructionParser> parser, std::unique_ptr<InstructionHandler> handler);
 };

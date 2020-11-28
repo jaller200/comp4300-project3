@@ -7,6 +7,7 @@
 #include "types.hpp"
 
 // MARK: -- Forward Declarations
+class InstructionHandler;
 class InstructionParser;
 
 /**
@@ -14,6 +15,9 @@ class InstructionParser;
  * instruction ID - a joining of the opcode and (optionally) function.
  */
 struct InstructionMetadata {
+
+    /** The instruction handler. */
+    std::unique_ptr<InstructionHandler> ptrHandler;
 
     /** The instruction parser. */
     std::unique_ptr<InstructionParser> ptrParser;

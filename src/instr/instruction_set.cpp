@@ -1,6 +1,10 @@
 #include "instr/instruction_set.hpp"
 
+#include <algorithm>
+
 #include "spdlog/spdlog.h"
+
+#include "exception/unknown_instruction_error.hpp"
 #include "utils/string_utils.hpp"
 
 // MARK: -- Construction
@@ -11,21 +15,61 @@ InstructionSet::InstructionSet() {
 }
 
 
+// MARK: -- Getter Methods
+
+// Gets an instruction handler
+InstructionHandler * InstructionSet::getInstructionHandler(word_t opcode, word_t funct) const {
+
+    // First, check our bounds
+    if (opcode > Instruction::LIMIT_OPCODE || funct > Instruction::LIMIT_FUNCT)
+        return nullptr;
+
+    // Next, create our ID
+    hword_t key = opcode;
+    key = (opcode & ~0xFF00) | ((funct << 8) & 0xFF00);
+
+    // Now try to find our handler
+    auto handler = this->m_mapIDToMetadata.find(key);
+    if (handler == this->m_mapIDToMetadata.end())
+        return nullptr;
+
+    return handler->second->ptrHandler.get();
+}
+
+// Gets an instruction parser
+InstructionParser * InstructionSet::getInstructionParser(const std::string& name) const {
+
+    // For this one, we need to handle it a bit differently.
+    std::string instrName = StringUtils::trim(StringUtils::toLowerCase(name));
+
+    // Verify that we actually have a name
+    if (instrName == "" || instrName != StringUtils::toLowerCase(name))
+        return nullptr;
+
+    // Now find the parser
+    auto parser = this->m_mapNameToMetadata.find(instrName);
+    if (parser == this->m_mapNameToMetadata.end())
+        return nullptr;
+
+    return parser->second->ptrParser.get();
+}
+
+
 // MARK: -- Registration Methods
 
 // Registers an I-type instruction
-bool InstructionSet::registerIType(const std::string& name, word_t opcode, std::unique_ptr<InstructionParser> parser) {
-    return this->registerInstruction(name, opcode, 0, InstructionType::I_FORMAT, std::move(parser));
+bool InstructionSet::registerIType(const std::string& name, word_t opcode, std::unique_ptr<InstructionParser> parser, std::unique_ptr<InstructionHandler> handler) {
+    return this->registerInstruction(name, opcode, 0, InstructionType::I_FORMAT, std::move(parser), std::move(handler));
 }
 
 // Registers a J-Type instruction
-bool InstructionSet::registerJType(const std::string& name, word_t opcode, std::unique_ptr<InstructionParser> parser) {
-    return this->registerInstruction(name, opcode, 0, InstructionType::J_FORMAT, std::move(parser));
+bool InstructionSet::registerJType(const std::string& name, word_t opcode, std::unique_ptr<InstructionParser> parser, std::unique_ptr<InstructionHandler> handler) {
+    return this->registerInstruction(name, opcode, 0, InstructionType::J_FORMAT, std::move(parser), std::move(handler));
 }
 
 // Registers an R-type instruction.
-bool InstructionSet::registerRType(const std::string& name, word_t opcode, word_t funct, std::unique_ptr<InstructionParser> parser) {
-    return this->registerInstruction(name, opcode, funct, InstructionType::R_FORMAT, std::move(parser));
+bool InstructionSet::registerRType(const std::string& name, word_t opcode, word_t funct, std::unique_ptr<InstructionParser> parser, std::unique_ptr<InstructionHandler> handler) {
+    return this->registerInstruction(name, opcode, funct, InstructionType::R_FORMAT, std::move(parser), std::move(handler));
 }
 
 
@@ -35,7 +79,7 @@ bool InstructionSet::registerRType(const std::string& name, word_t opcode, word_
 bool InstructionSet::registerPsuedoType(const std::string& name, std::unique_ptr<InstructionParser> parser) {
 
     // For this one, we need to handle it a bit differently.
-    std::string instrName = StringUtils::trim(StringUtils::toLowerCase(name));
+    std::string instrName = StringUtils::toLowerCase(name);
 
     // Verify that we actually have a name
     if (instrName == "") {
@@ -44,7 +88,7 @@ bool InstructionSet::registerPsuedoType(const std::string& name, std::unique_ptr
     }
 
     // Also verify that there was no whitespace in the original name
-    if (instrName != StringUtils::toLowerCase(name)) {
+    if (std::find_if(instrName.begin(), instrName.end(), [](unsigned char ch) { return std::isspace(ch); }) != instrName.end()) {
         spdlog::error("Unable to register psuedo-instruction - name must not contain any whitespace");
         return false;
     }
@@ -55,7 +99,7 @@ bool InstructionSet::registerPsuedoType(const std::string& name, std::unique_ptr
         return false;
     }
 
-    // And finally make sure our parser is not null
+    // And finally, make sure our parser is not null
     if (parser == nullptr) {
         spdlog::error("Unable to register psuedo-instruction with name {} - cannot register null parser", instrName);
         return false;
@@ -63,6 +107,7 @@ bool InstructionSet::registerPsuedoType(const std::string& name, std::unique_ptr
 
     // Now create our metadata
     std::shared_ptr<InstructionMetadata> metadata(new InstructionMetadata());
+    metadata->ptrHandler = nullptr;
     metadata->ptrParser = std::move(parser);
     metadata->strName = instrName;
     metadata->type = InstructionType::PSUEDO;
@@ -103,7 +148,7 @@ InstructionType InstructionSet::getType(const std::string& name) const {
 // MARK: -- Private Methods
 
 // Registers an instruction. Does not check for type (member functions should do this)
-bool InstructionSet::registerInstruction(const std::string& name, word_t opcode, word_t funct, InstructionType type, std::unique_ptr<InstructionParser> parser) {
+bool InstructionSet::registerInstruction(const std::string& name, word_t opcode, word_t funct, InstructionType type, std::unique_ptr<InstructionParser> parser, std::unique_ptr<InstructionHandler> handler) {
 
     // First, verify that we are within our bounds (needed before we check the opcode)
     if (opcode > Instruction::LIMIT_OPCODE || funct > Instruction::LIMIT_FUNCT) {
@@ -128,7 +173,7 @@ bool InstructionSet::registerInstruction(const std::string& name, word_t opcode,
     }
 
     // Now, get our name
-    std::string instrName = StringUtils::trim(StringUtils::toLowerCase(name));
+    std::string instrName = StringUtils::toLowerCase(name);
 
     // Verify that we actually have a name
     if (instrName == "") {
@@ -137,7 +182,7 @@ bool InstructionSet::registerInstruction(const std::string& name, word_t opcode,
     }
 
     // Also verify that there was no whitespace in the original name
-    if (instrName != StringUtils::toLowerCase(name)) {
+    if (std::find_if(instrName.begin(), instrName.end(), [](unsigned char ch) { return std::isspace(ch); }) != instrName.end()) {
         spdlog::error("Unable to register instruction with opcode {} and funct {} - name must not contain any whitespace", opcode, funct);
         return false;
     }
@@ -148,14 +193,21 @@ bool InstructionSet::registerInstruction(const std::string& name, word_t opcode,
         return false;
     }
 
-    // And finally make sure our parser is not null
+    // Make sure our parser is not null
     if (parser == nullptr) {
         spdlog::error("Unable to register instruction with opcode {}, funct {}, and name {} - cannot register null parser", opcode, funct, instrName);
         return false;
     }
 
+    // And finally, make sure our handler is not null
+    if (handler == nullptr) {
+        spdlog::error("Unable to register instruction with opcode {}, funct {}, and name {} - cannot register null handler", opcode, funct, instrName);
+        return false;
+    }
+
     // Now that we are here, we can register our instruction confidently
     std::shared_ptr<InstructionMetadata> metadata(new InstructionMetadata());
+    metadata->ptrHandler = std::move(handler);
     metadata->ptrParser = std::move(parser);
     metadata->strName = instrName;
     metadata->type = type;
