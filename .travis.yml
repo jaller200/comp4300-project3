@@ -8,45 +8,7 @@ os:
 
 # Distribution Information
 sudo: required
-dist: precise
-
-# Functionality taken from: https://genbattle.bitbucket.io/blog/2016/01/17/c++-travis-ci/
-matrix:
-  include:
-    - compiler: gcc
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-4.9
-      env: COMPILER=g++-4.9
-    - compiler: gcc
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-5
-      env: COMPILER=g++-5
-    - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.6
-          packages:
-            - clang-3.6
-      env: COMPILER=clang++-3.6
-    - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
-          packages:
-            - clang-3.7
-      env: COMPILER=clang++-3.7
+dist: trusty
 
 # Git Information
 branches:
@@ -64,3 +26,57 @@ script:
   - ./scripts/clean.sh
   - ./scripts/build.sh
   - ./scripts/test.sh
+
+# Functionality adapted from: 
+#
+#   - https://genbattle.bitbucket.io/blog/2016/01/17/c++-travis-ci/
+#   - https://chromium.googlesource.com/external/github.com/google/re2/+/refs/tags/2019-04-01/.travis.yml
+#
+matrix:
+  include:
+    
+    # GCC 4.9
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+      env:
+        - MATRIX_EVAL="CC=gcc-4.9 CXX=g++-4.9"
+    
+    # GCC 5
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+        - MATRIX_EVAL="CC=gcc-5 CXX=g++-5"
+
+    # Clang 3.6
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+          packages:
+            - clang-3.6
+      env:
+        - MATRIX_EVAL="CC=clang-3.6 CXX=clang++-3.6"
+    
+    # Clang 3.7
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+          packages:
+            - clang-3.7
+      env:
+        - MATRIX_EVAL="CC=clang-3.7 CXX=clang++-3.7"
