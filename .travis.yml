@@ -1,11 +1,6 @@
 # Language Information
 language: cpp
 
-# Operating System Information
-os:
-  - linux
-  - osx
-
 # Distribution Information
 sudo: required
 dist: trusty
