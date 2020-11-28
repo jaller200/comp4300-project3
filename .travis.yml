@@ -1,28 +1,65 @@
+# Language Information
 language: cpp
 
+# Operating System Information
 os:
   - linux
   - osx
 
+# Distribution Information
+sudo: required
 dist: trusty
 
-compiler:
-  - clang
-  - gcc
+# Functionality taken from: https://genbattle.bitbucket.io/blog/2016/01/17/c++-travis-ci/
+matrix:
+  include:
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+      env: COMPILER=g++-4.9
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env: COMPILER=g++-5
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+          packages:
+            - clang-3.6
+      env: COMPILER=clang++-3.6
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+          packages:
+            - clang-3.7
+      env: COMPILER=clang++-3.7
 
-env:
-  # - CONFIG=Release
-  - CONFIG=Debug
-
+# Git Information
 branches:
   only:
     - dev
 
+# Notification Information
 notifications:
   email:
     on_success: change
     on_failure: always
 
+# Build Information
 script:
   - ./scripts/clean.sh
   - ./scripts/build.sh
