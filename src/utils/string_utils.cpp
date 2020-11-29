@@ -1,5 +1,6 @@
 #include "utils/string_utils.hpp"
 
+#include <iostream>
 #include <algorithm>
 #include <cctype>
 #include <locale>
@@ -12,6 +13,29 @@ std::string StringUtils::toLowerCase(std::string str) {
     // Convert the string
     std::transform(str.begin(), str.end(), str.begin(), ::tolower);
     return str;
+}
+
+
+// MARK: -- Number Methods
+
+// Converts a string to a number
+sword_t StringUtils::toNumber(const std::string str) {
+
+    sword_t val;
+    if (str.rfind("0x", 0) == 0) {
+        val = std::stoi(str, nullptr, 16);
+    }
+    else if (str.rfind("0b", 0) == 0) {
+        val = std::stoi(str.substr(2), nullptr, 2);
+    }
+    else if (str.rfind("0", 0) == 0) {
+        val = std::stoi(str, nullptr, 8);
+    }
+    else {
+        val = std::stoi(str);
+    }
+
+    return val;
 }
 
 

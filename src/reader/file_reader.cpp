@@ -8,6 +8,7 @@
 #include "spdlog/spdlog.h"
 
 #include "instr/instruction.hpp"
+#include "instr/instruction_encoder.hpp"
 #include "instr/instruction_parser.hpp"
 #include "instr/instruction_set.hpp"
 #include "memory/memory.hpp"
@@ -18,7 +19,7 @@
 // MARK: -- Reader Methods
 
 // Read a file into memory
-bool FileReader::readFile(const std::string& filename, const InstructionSet& instrSet, const Memory& memory) const {
+bool FileReader::readFile(const std::string& filename, const InstructionSet& instrSet, Memory& memory) const {
 
     // First, try to open our files
     std::ifstream fileStream;
@@ -104,15 +105,14 @@ bool FileReader::readFile(const std::string& filename, const InstructionSet& ins
 
             // Parse the instruction
             std::vector<Instruction> instrs = parser->parse(line);
-            for (const Instruction& instr : instrs) {
-                std::cout << "Opcode: " << instr.getOpcode() << ", Funct: " << instr.getFunct() << std::endl;
+            for (const Instruction& instr : instrs) { 
+                std::cout << "Val: " << instr.getImmediate() << std::endl;
             }
+
+            instructions.insert(instructions.end(), instrs.begin(), instrs.end());
 
             // Add 4*size to the curr text
             currText += 4 * instrs.size();
-
-            // Now merge this into the instructions
-            instructions.insert(instructions.end(), instrs.begin(), instrs.end());
         }
         else if (section == "data") {
 
@@ -122,10 +122,39 @@ bool FileReader::readFile(const std::string& filename, const InstructionSet& ins
 
     // Once we are here, we can write to memory
     currText = Memory::MEM_USER_START;
-    for (const Instruction& instr : instructions) {
+    for (Instruction& instr : instructions) {
 
-        // Write this data to memory
+        // If we have a label set, then we need to get an address
+        if (instr.getLabel() != "") {
+
+            // Get the address for the label
+            auto search = symbols.find(instr.getLabel());
+            if (search == symbols.end()) {
+                spdlog::critical("Unable to find address for symbol '{}'", instr.getLabel());
+                return false;
+            }
+
+            // Handle the address depending on the type
+            Memory::addr_t addr = search->second;
+            if (instr.getType() == InstructionType::I_FORMAT) {
+
+                // Get the signed difference 
+                shword_t diff = static_cast<shword_t>(addr - (currText + 4));
+
+                // Set the immediate to this signed difference
+                instr.setImmediate(static_cast<hword_t>(diff));
+            }
+            else if (instr.getType() == InstructionType::J_FORMAT) {
+                // TODO: Handle this
+            }
+        }
+
+        // Now go ahead and encode our instruction
+        Instruction::instr_t encodedInstr = InstructionEncoder::encode(instr);
         
+        // And write the data
+        memory.writeWord(currText, encodedInstr);
+        currText += 4;
     }
 
     return true;

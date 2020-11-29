@@ -30,5 +30,5 @@ public:
      * @param memory The memory
      * @return Whether or not the file was read successfully
      */
-    bool readFile(const std::string& filename, const InstructionSet& instrSet, const Memory& memory) const;
+    bool readFile(const std::string& filename, const InstructionSet& instrSet, Memory& memory) const;
 };

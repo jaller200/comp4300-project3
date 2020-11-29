@@ -28,7 +28,7 @@ std::vector<Instruction> AddParser::parse(const std::string& line) const {
     //
     //      add dest, src1, src2
     //
-    std::regex add_rgx("^(add)\\s+(\\$\\w+),\\s*(\\$\\w+),\\s*(\\$\\w+)$");
+    std::regex add_rgx("^(add)\\s+(\\$\\w+),\\s*(\\$\\w+),\\s*(\\$\\w+)");
     std::smatch match;
 
     if (!std::regex_search(trimmedLine.cbegin(), trimmedLine.cend(), match, add_rgx))
