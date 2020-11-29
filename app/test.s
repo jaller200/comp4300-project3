@@ -1,20 +1,20 @@
 .text
 main:
-    li      $1, 0
-    li      $2, 10
-    li      $3, 100
-    li      $4, 1000
-    li      $5, 7
+    li      $6, 0
+    li      $7, 10
+    li      $8, 100
+    li      $9, 1000
+    li      $10, 7
 
 loop:
-    subi    $5, $5, 1
-    add     $1, $1, $2
-    add     $1, $1, $3
-    add     $1, $1, $4
-    bge     $5, $0, loop
+    subi    $10, $10, 1
+    add     $6, $6, $7
+    add     $6, $6, $8
+    add     $6, $6, $9
+    bge     $10, $0, loop
     nop
 
-    add     $4, $0, $1
+    add     $4, $0, $6
     li      $2, 1
     syscall
 
