@@ -1,29 +1,25 @@
 #pragma once
 
 #include "instr/instruction.hpp"
+#include "instr/instruction_handler.hpp"
 #include "memory/memory.hpp"
 #include "pipeline/execution_buffer.hpp"
 #include "pipeline/instruction_decode_buffer.hpp"
 #include "pipeline/memory_buffer.hpp"
-
-// MARK: -- Forward Declarations
-class RegisterBank;
+#include "types.hpp"
 
 /**
- * A base class for all instructon handlers for the simulator.
+ * A handler for the ADD instruction
  */
-class InstructionHandler {
+class AddHandler: public InstructionHandler {
 public:
 
     // MARK: -- Construction
-
-    /**
-     * Virtual destructor.
-     */
-    virtual ~InstructionHandler() { }
+    AddHandler() = default;
+    ~AddHandler() = default;
 
 
-    // MARK: -- Handler Methods    
+    // MARK: -- Handler Methods
 
     /**
      * Handles any post decoding of an instruction.
@@ -31,14 +27,14 @@ public:
      * @param registerBank The register bank
      * @param PC The program counter
      */
-    virtual void onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory::addr_t& PC) = 0;
+    void onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory::addr_t& PC) override;
 
     /**
      * Handles any execution necessary.
      * @param decodeBuffer The decoded information
      * @return The output value (ALU output) from the execution stage, or 0
      */
-    virtual word_t onExecute(const InstructionDecodeBuffer& decodeBuffer) = 0;
+    word_t onExecute(const InstructionDecodeBuffer& decodeBuffer) override;
 
     /**
      * Handles any reading / writing of memory.
@@ -46,5 +42,5 @@ public:
      * @param memory Our memory
      * @return Any read memory, or 0
      */
-    virtual word_t onMemory(const ExecutionBuffer& executionBuffer, const Memory& memory) = 0;
+    word_t onMemory(const ExecutionBuffer& executionBuffer, const Memory& memory) override;
 };

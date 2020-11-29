@@ -11,6 +11,7 @@
  *      addr        -> A 32-bit integer within the range of 0 to 67,108,863 (2^26-1), unvalidated
  *      funct       -> A 32-bit integer within the range of 0 to 63 (2^6-1), unvalidated
  *      immediate   -> A 32-bit integer within the range of 0 to 65,535 (2^16-1), unvalidated
+ *      label       -> An empty or single word label with no whitespace, unvalidated
  *      opcode      -> A 32-bit integer within the range of 0 to 63 (2^6-1), unvalidated
  *      rd          -> A 32-bit integer within the range of 0 to 31 (2^5-1), unvalidated
  *      rs          -> A 32-bit integer within the range of 0 to 31 (2^5-1), unvalidated
@@ -22,14 +23,17 @@
  * 
  * Valid Tests:
  *      All types with a nominal value (something in the range)
- *      All types with a minimum valid value (0)
- *      All types with a maximum valid value
+ *      All types with a minimum valid value (0), save for the label
+ *      All types with a maximum valid value, save for the label
+ *      Label with empty string
+ *      Label with uppercase
  * 
  * Valid Outputs:
  *      All types return true and values return what they were set to
  * 
  * Invalid Tests:
  *      All types with a value one beyond their max (since values are unsigned) return false
+ *      Label with whitespace
  */
 TEST_CASE("Instructions properly observe variable limits", "[instruction]") {
 
@@ -120,6 +124,36 @@ TEST_CASE("Instructions properly observe variable limits", "[instruction]") {
         Instruction instr;
         REQUIRE(instr.setImmediate(65536) == false);
         REQUIRE(instr.getImmediate() == 0);
+    }
+
+
+    // MARK: -- "label" tests
+    SECTION("Returns success and valid value when setting label to a nominal value") {
+
+        Instruction instr;
+        REQUIRE(instr.setLabel("test") == true);
+        REQUIRE(instr.getLabel() == "test");
+    }
+
+    SECTION("Returns success and valid value when setting label to an empty value") {
+
+        Instruction instr;
+        REQUIRE(instr.setLabel("") == true);
+        REQUIRE(instr.getLabel() == "");
+    }
+
+    SECTION("Returns success and valid value when setting label with some upper case") {
+
+        Instruction instr;
+        REQUIRE(instr.setLabel("tEsT") == true);
+        REQUIRE(instr.getLabel() == "test");
+    }
+
+    SECTION("Fails when setting label with whitespae") {
+
+        Instruction instr;
+        REQUIRE_FALSE(instr.setLabel("bob joe"));
+        REQUIRE(instr.getLabel() == "");
     }
 
 
@@ -285,17 +319,18 @@ TEST_CASE("Instructions properly observe variable limits", "[instruction]") {
  *      Assign all variables some nominal value (1)
  * 
  * Valid Outputs:
- *      All numbers should be zero after function call
+ *      All numbers should be zero after function call, label should be empty
  * 
  * Invalid Tests:
  *      None
  */
-TEST_CASE("Instruction reset should properly set fields to 0") {
+TEST_CASE("Instruction reset should properly set fields to 0 and label to empty") {
 
     Instruction instr;
     instr.setAddr(1);
     instr.setFunct(1);
     instr.setImmediate(1);
+    instr.setLabel("");
     instr.setOpcode(1);
     instr.setRd(1);
     instr.setRs(1);
@@ -306,6 +341,7 @@ TEST_CASE("Instruction reset should properly set fields to 0") {
     REQUIRE(instr.getAddr() == 0);
     REQUIRE(instr.getFunct() == 0);
     REQUIRE(instr.getImmediate() == 0);
+    REQUIRE(instr.getLabel() == "");
     REQUIRE(instr.getOpcode() == 0);
     REQUIRE(instr.getRd() == 0);
     REQUIRE(instr.getRs() == 0);

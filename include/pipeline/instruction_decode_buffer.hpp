@@ -26,18 +26,18 @@ struct InstructionDecodeBuffer {
     /** The opcode. */
     word_t wOpcode;
 
-    /** The destination register number. */
-    word_t wRegDest;
+    /** The destination register number (RD for R-Type, RT for I-Type). -1 if unused */
+    sword_t wRegDest;
 
-    /** The source RS register number. */
-    word_t wRegSrc1;
+    /** The source #1 register number (RS). -1 if unused */
+    sword_t wRegSrc1;
 
-    /** The source RT register number. */
-    word_t wRegSrc2;
+    /** The source #2 register number (typically RT for R-Type). Can be -1 if unused */
+    sword_t wRegSrc2;
 
-    /** The value of the source RS register. */
+    /** The value of the source RS register, if used (0 otherwise). */
     word_t wValSrc1;
 
-    /** The value of the source RT register. */
+    /** The value of the source RT register, if used (0 otherwise). */
     word_t wValSrc2;
 };

@@ -1,7 +1,10 @@
 #include "mocks/handlers/test_handler.hpp"
 
-InstructionDecodeBuffer TestHandler::handleInstructionDecode(const InstructionFetchBuffer& fetchBuffer, Memory::addr_t& PC, const RegisterBank& registerBank) {
-    
-    InstructionDecodeBuffer buffer;
-    return buffer;
-}
+// On post decode
+void TestHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory::addr_t& PC) { }
+
+// On execute
+word_t TestHandler::onExecute(const InstructionDecodeBuffer& decodeBuffer) { return 0; }
+
+// On memory
+word_t TestHandler::onMemory(const ExecutionBuffer& executionBuffer, const Memory& memory) { return 0; }

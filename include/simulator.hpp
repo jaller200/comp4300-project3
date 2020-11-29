@@ -54,14 +54,14 @@ private:
     std::unique_ptr<RegisterBank> m_registerBank;
 
 
-    // MARK: -- Private Handler Methods
+    // MARK: -- Private Handler Methods (in order of cycle)
 
     /**
-     * Handles the instruction execution.
-     * @param decodeBuffer The decode buffer
-     * @return A buffer with any output from the execution
+     * Handles the instruction fetch.
+     * @param PC The program counter (will be updated by 4)
+     * @return A buffer with the fetched insruction.
      */
-    ExecutionBuffer handleExecution(const InstructionDecodeBuffer& decodeBuffer);
+    InstructionFetchBuffer handleInstructionFetch(Memory::addr_t& PC);
 
     /**
      * Handles the instruction decoding.
@@ -72,11 +72,13 @@ private:
     InstructionDecodeBuffer handleInstructionDecode(const InstructionFetchBuffer& fetchBuffer, Memory::addr_t& PC);
 
     /**
-     * Handles the instruction fetch.
-     * @param PC The program counter (will be updated by 4)
-     * @return A buffer with the fetched insruction.
+     * Handles the instruction execution.
+     * @param decodeBuffer The decode buffer
+     * @param oldExecutionBuffer The old execution buffer
+     * @param newMemoryBuffer The new memory buffer
+     * @return A buffer with any output from the execution
      */
-    InstructionFetchBuffer handleInstructionFetch(Memory::addr_t& PC);
+    ExecutionBuffer handleExecution(InstructionDecodeBuffer& decodeBuffer, ExecutionBuffer& oldExecutionBuffer, MemoryBuffer& newMemoryBuffer);
 
     /**
      * Handles the instruction memory stage.

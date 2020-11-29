@@ -8,6 +8,9 @@
  */
 struct ExecutionBuffer {
 
+    /** The function. */
+    word_t wFunct;
+
     /** The opcode. */
     word_t wOpcode;
 

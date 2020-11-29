@@ -31,6 +31,7 @@ file(GLOB LIB_SOURCES "src/*.cpp"
                         "src/instr/handlers/*.cpp"
                         "src/instr/parsers/*.cpp"
                         "src/memory/*.cpp"
+                        "src/reader/*.cpp"
                         "src/registers/*.cpp"
                         "src/utils/*.cpp")
 
@@ -45,6 +46,7 @@ file(GLOB TEST_SOURCES "tests/*.cpp"
                         "tests/memory/*.cpp"
                         "tests/mocks/handlers/*.cpp"
                         "tests/mocks/parsers/*.cpp"
+                        "tests/reader/*.cpp"
                         "tests/registers/*.cpp"
                         "tests/utils/*.cpp")
 

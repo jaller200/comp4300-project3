@@ -15,11 +15,25 @@ class TestHandler: public InstructionHandler {
 public:
 
     /**
-     * Handles an instruction decode.
-     * @param fetchBuffer The fetch buffer
-     * @param PC The program counter
+     * Handles any post decoding of an instruction.
+     * @param decodeBuffer The decode buffer
      * @param registerBank The register bank
-     * @return The decode buffer
+     * @param PC The program counter
      */
-    InstructionDecodeBuffer handleInstructionDecode(const InstructionFetchBuffer& fetchBuffer, Memory::addr_t& PC, const RegisterBank& registerBank) override;
+    virtual void onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory::addr_t& PC) override;
+
+    /**
+     * Handles any execution necessary.
+     * @param decodeBuffer The decoded information
+     * @return The output value (ALU output) from the execution stage, or 0
+     */
+    virtual word_t onExecute(const InstructionDecodeBuffer& decodeBuffer) override;
+
+    /**
+     * Handles any reading / writing of memory.
+     * @param executionBuffer The execution buffer information
+     * @param memory Our memory
+     * @return Any read memory, or 0
+     */
+    virtual word_t onMemory(const ExecutionBuffer& executionBuffer, const Memory& memory) override;
 };

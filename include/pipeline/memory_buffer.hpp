@@ -8,13 +8,13 @@
  */
 struct MemoryBuffer {
 
-    /** The output of the memory if applicable. */
-    word_t wMemoryOutput;
+    /** The function. */
+    word_t wFunct;
 
     /** The opcode. */
     word_t wOpcode;
 
-    /** The output of the ALU if applicable. */
+    /** The output of the ALU or memory if applicable. */
     word_t wOutput;
 
     /** The destination register number. */

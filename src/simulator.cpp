@@ -65,7 +65,7 @@ void Simulator::run() {
 
         // Next, execute the instruction
         oldBufferEX = newBufferEX;
-        newBufferEX = this->handleExecution(newBufferID);
+        newBufferEX = this->handleExecution(newBufferID, oldBufferEX, newBufferMEM);
 
         // After this, handle any memory
         oldBufferMEM = newBufferMEM;
@@ -83,112 +83,6 @@ void Simulator::run() {
 
 
 // MARK: -- Private Handler Methods
-
-// Handles the instruction execution
-ExecutionBuffer Simulator::handleExecution(const InstructionDecodeBuffer& decodeBuffer) {
-
-    // First, detect any data hazards
-
-    // Next, TODO: Call children methods
-    ExecutionBuffer buffer;
-
-    buffer.wRegDest = decodeBuffer.wRegDest;
-    buffer.wRegValue = decodeBuffer.wValSrc2;
-    return buffer;
-}
-
-// Handles the instruction decode
-InstructionDecodeBuffer Simulator::handleInstructionDecode(const InstructionFetchBuffer& fetchBuffer, Memory::addr_t& PC) {
-
-    // First, get our instruction type
-    word_t opcode = fetchBuffer.wInstruction & ((1 << 6) - 1);
-    InstructionType instrType = this->m_instrSet->getType(opcode);
-
-    if (instrType == InstructionType::UNKNOWN) {
-        spdlog::critical("SIGILL: Attempting to decode an invalid or illegal instruction!");
-        exit(1);
-    }
-
-    InstructionDecodeBuffer buffer;
-    return buffer;
-
-    // TODO: Decode further via handler.
-
-    // Now decode our instruction
-    /*Instruction instr = InstructionEncoder::decode(fetchBuffer.wInstruction, instrType);
-
-    // Finally, create our buffer
-    InstructionDecodeBuffer buffer;
-    buffer.wOpcode = opcode;
-
-    switch (instr.getType()) {
-
-        // I-Format
-        case InstructionType::I_FORMAT: {
-
-            // Populate the buffer
-            buffer.wFunct = 0;
-            buffer.wImmediate = instr.getImmediate();
-            buffer.wRegDest = instr.getRt();
-            buffer.wRegSrc1 = instr.getRs();
-            buffer.wRegSrc2 = 0;
-            buffer.wValSrc2 = 0;
-
-            // Try to read our value
-            if (!this->m_registerBank->readRegister(buffer.wRegSrc1, buffer.wValSrc1)) {
-                spdlog::critical("SIGILL: Attempting to decode an I-Type instruction with an invalid register source: '" + std::to_string(buffer.wRegSrc1) + "'");
-                exit(1);
-            }
-            break;
-        }
-
-        // J-Format
-        case InstructionType::J_FORMAT: {
-
-            // Populate the buffer
-            buffer.wFunct = 0;
-            buffer.wImmediate = instr.getAddr();
-            buffer.wRegDest = 0;
-            buffer.wRegSrc1 = 0;
-            buffer.wRegSrc2 = 0;
-            buffer.wValSrc1 = 0;
-            buffer.wValSrc2 = 0;
-            break;
-        }
-
-        // R-Format
-        case InstructionType::R_FORMAT: {
-
-            // Populate the buffer
-            buffer.wFunct = instr.getFunct();
-            buffer.wImmediate = instr.getShamt();
-            buffer.wRegDest = instr.getRd();
-            buffer.wRegSrc1 = instr.getRs();
-            buffer.wRegSrc2 = instr.getRt();
-            
-            // Try to read our values
-            if (!this->m_registerBank->readRegister(buffer.wRegSrc1, buffer.wValSrc1)) {
-                spdlog::critical("SIGILL: Attempting to decode an R-Type instruction with an invalid register source #1: '" + std::to_string(buffer.wRegSrc1) + "'");
-                exit(1);
-            }
-            
-            if (!this->m_registerBank->readRegister(buffer.wRegSrc2, buffer.wValSrc2)) {
-                spdlog::critical("SIGILL: Attempting to decode an R-Type instruction with an invalid register source #2: '" + std::to_string(buffer.wRegSrc2) + "'");
-                exit(1);
-            }
-            break;
-        }
-
-        // We should never get here
-        default: {
-            spdlog::critical("SIGILL: Attempting to decode a malformed instruction");
-            exit(1);
-        }
-    }
-
-    // Now that we are here, we have our buffer populated
-    return buffer;*/
-}
 
 // Handles the instruction fetch
 InstructionFetchBuffer Simulator::handleInstructionFetch(Memory::addr_t& PC) {
@@ -214,17 +108,126 @@ InstructionFetchBuffer Simulator::handleInstructionFetch(Memory::addr_t& PC) {
     return buffer;
 }
 
+// Handles the instruction decode
+InstructionDecodeBuffer Simulator::handleInstructionDecode(const InstructionFetchBuffer& fetchBuffer, Memory::addr_t& PC) {
+
+    // First, get our instruction type
+    word_t opcode = fetchBuffer.wInstruction & ((1 << 6) - 1);
+    InstructionType instrType = this->m_instrSet->getType(opcode);
+    if (instrType == InstructionType::UNKNOWN) {
+        spdlog::critical("SIGILL: Attempting to decode an invalid or illegal instruction!");
+        exit(1);
+    }
+
+    // Decode the instruction
+    Instruction instr = InstructionEncoder::decode(fetchBuffer.wInstruction, instrType);
+
+    // Create the instruction buffer
+    InstructionDecodeBuffer buffer;
+    buffer.wOpcode = opcode;
+
+    // Now read more depending on the type
+    if (instrType == InstructionType::I_FORMAT) {
+
+        // Get our immedate value, source register (and read it), and our destination register
+        buffer.wImmediate = instr.getImmediate();
+        buffer.wRegDest = instr.getRt();
+        buffer.wRegSrc1 = instr.getRs();
+        buffer.wRegSrc2 = -1;
+        this->m_registerBank->readRegister(buffer.wRegSrc1, buffer.wValSrc1);
+    }
+    else if (instrType == InstructionType::J_FORMAT) {
+
+        // Just get our address (immediate) value
+        buffer.wImmediate = instr.getAddr();
+        buffer.wRegDest = -1;
+        buffer.wRegSrc1 = -1;
+        buffer.wRegSrc2 = -1;
+    }
+    else if (instrType == InstructionType::R_FORMAT) {
+
+        // Get both source registers and read them, the destination register, and the shamt (immediate)
+        // as well as the funct
+        buffer.wFunct = instr.getFunct();
+        buffer.wImmediate = instr.getShamt();
+        buffer.wRegDest = instr.getRd();
+        buffer.wRegSrc1 = instr.getRs();
+        buffer.wRegSrc2 = instr.getRt();
+        this->m_registerBank->readRegister(buffer.wRegSrc1, buffer.wValSrc1);
+        this->m_registerBank->readRegister(buffer.wRegSrc2, buffer.wValSrc2);
+    }
+
+    // Finally handle any post decoding (mainly for branches)
+    InstructionHandler * handler = this->m_instrSet->getInstructionHandler(buffer.wOpcode, buffer.wFunct);
+    if (handler == nullptr) {
+        spdlog::critical("SIGILL: Attempting to decode an invalid or illegal instruction");
+        exit(1);
+    }
+
+    // Handle any post decoding and return the buffer (generally handles branches / syscalls)
+    handler->onPostDecode(buffer, *this->m_registerBank.get(), PC);
+    return buffer;
+}
+
+// Handles the instruction execution
+ExecutionBuffer Simulator::handleExecution(InstructionDecodeBuffer& decodeBuffer, ExecutionBuffer& oldExecutionBuffer, MemoryBuffer& newMemoryBuffer) {
+
+    // If this cycle's decode buffer uses a register written to by last cycle's execution,
+    // forward the output into the decoded buffer
+    if (oldExecutionBuffer.wRegDest == decodeBuffer.wRegSrc1)
+        decodeBuffer.wValSrc1 = oldExecutionBuffer.wOutput;
+
+    if (oldExecutionBuffer.wRegDest == decodeBuffer.wRegSrc2)
+        decodeBuffer.wValSrc2 = oldExecutionBuffer.wOutput;
+
+    // If this cycle's decode buffer uses a register written to by last cycle's memory read,
+    // forward the output into the decoded buffer
+    if (newMemoryBuffer.wRegDest == decodeBuffer.wRegSrc1)
+        decodeBuffer.wValSrc1 = newMemoryBuffer.wOutput;
+
+    if (newMemoryBuffer.wRegDest == decodeBuffer.wRegSrc2)
+        decodeBuffer.wValSrc2 = newMemoryBuffer.wOutput;
+
+    // Create our new buffer
+    ExecutionBuffer buffer;
+
+    // Next, get our instruction handler
+    InstructionHandler * handler = this->m_instrSet->getInstructionHandler(decodeBuffer.wOpcode, decodeBuffer.wFunct);
+    if (handler == nullptr) {
+        spdlog::critical("SIGILL: Attempting to execute an invalid or illegal instruction");
+        exit(1);
+    }
+
+    // Handle our execution
+    buffer.wOutput = handler->onExecute(decodeBuffer);
+
+    // Set any remaining flags
+    buffer.wFunct = decodeBuffer.wFunct;
+    buffer.wOpcode = decodeBuffer.wOpcode;
+    buffer.wRegDest = decodeBuffer.wRegDest;
+    buffer.wRegValue = decodeBuffer.wValSrc2;
+    return buffer;
+}
+
 // Handle the instruction memory stage
 MemoryBuffer Simulator::handleMemory(const ExecutionBuffer& executionBuffer) {
 
-    // TODO: Call children methods for any memory access
+    // Get our handler
+    InstructionHandler * handler = this->m_instrSet->getInstructionHandler(executionBuffer.wOpcode, executionBuffer.wFunct);
+    if (handler == nullptr) {
+        spdlog::critical("SIGILL: Attempting to handle memory from an invalid or illegal instruction");
+        exit(1);
+    }
+
+    // Create our buffer
     MemoryBuffer buffer;
 
-    // If we are an R-Type, we have no memory stage
-    if (this->m_instrSet->getType(executionBuffer.wOpcode) == InstructionType::R_FORMAT)
-        buffer.wOutput = executionBuffer.wOutput;
-
-    // Copy opcode and the register destination
+    // Memory read instructions will put memory output here, other instructions
+    // may just forward ALU output here
+    buffer.wOutput = handler->onMemory(executionBuffer, *this->m_memory.get());
+    
+    // Set any addition information
+    buffer.wFunct = executionBuffer.wFunct;
     buffer.wOpcode = executionBuffer.wOpcode;
     buffer.wRegDest = executionBuffer.wRegDest;
     return buffer;
@@ -233,5 +236,7 @@ MemoryBuffer Simulator::handleMemory(const ExecutionBuffer& executionBuffer) {
 // Handle the instruction write back stage
 void Simulator::handleWriteBack(const MemoryBuffer& memoryBuffer) {
 
-    // TODO: Call children methods
+    // Write back everything
+    if (memoryBuffer.wRegDest != -1)
+        this->m_registerBank->writeRegister(memoryBuffer.wRegDest, memoryBuffer.wOutput);
 }

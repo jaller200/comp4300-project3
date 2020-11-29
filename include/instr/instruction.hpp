@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "instr/instruction_type.hpp"
 #include "types.hpp"
 
@@ -74,6 +76,12 @@ public:
     word_t getImmediate() const;
 
     /**
+     * Returns the label.
+     * @return The label
+     */
+    std::string getLabel() const;
+
+    /**
      * Returns the opcode.
      * @return The opcode
      */
@@ -131,6 +139,13 @@ public:
     bool setImmediate(word_t immediate);
 
     /**
+     * Sets the label. No whitespace can be in the label
+     * @param label The label value
+     * @return Whether or not the label was set
+     */
+    bool setLabel(const std::string& label);
+
+    /**
      * Sets the opcode.
      * @param opcode The opcode
      * @return Whether or not the opcode was set
@@ -183,6 +198,9 @@ private:
 
     /** 16-bit immediate value. */
     word_t m_wImmediate;
+
+    /** A label (only needed for the address). */
+    std::string m_strLabel;
 
     /** The opcode. */
     word_t m_wOpcode;

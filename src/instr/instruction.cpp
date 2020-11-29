@@ -1,5 +1,9 @@
 #include "instr/instruction.hpp"
 
+#include <algorithm>
+
+#include "utils/string_utils.hpp"
+
 // MARK: -- Construction
 Instruction::Instruction()
 : m_wAddr(0)
@@ -45,6 +49,10 @@ word_t Instruction::getFunct() const {
 // Returns the signed immediate value
 word_t Instruction::getImmediate() const {
     return this->m_wImmediate;
+}
+
+std::string Instruction::getLabel() const {
+    return this->m_strLabel;
 }
 
 // Returns the opcode
@@ -98,6 +106,17 @@ bool Instruction::setImmediate(word_t immediate) {
 
     if (immediate > LIMIT_IMM) return false;
     this->m_wImmediate = immediate;
+    return true;
+}
+
+// Sets the label value
+bool Instruction::setLabel(const std::string& label) {
+
+    std::string labelName = StringUtils::toLowerCase(label);
+    if (std::find_if(labelName.begin(), labelName.end(), [](unsigned char ch) { return std::isspace(ch); }) != labelName.end())
+        return false;
+
+    this->m_strLabel = labelName;
     return true;
 }
 
