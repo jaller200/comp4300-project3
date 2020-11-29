@@ -193,11 +193,4 @@ TEST_CASE("ADD parser properly parses line") {
         AddParser parser;
         REQUIRE_THROWS_AS(parser.parse(input), SyntaxError);
     }
-
-    SECTION("Parsing a line with writing to the zero register throws a syntax error") {
-
-        std::string input = "add $0, $1, $2";
-        AddParser parser;
-        REQUIRE_THROWS_AS(parser.parse(input), SyntaxError);        
-    }
 }

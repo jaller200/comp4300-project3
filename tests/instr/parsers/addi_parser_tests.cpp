@@ -255,11 +255,4 @@ TEST_CASE("ADDI parser properly parses line") {
         AddiParser parser;
         REQUIRE_THROWS_AS(parser.parse(input), SyntaxError);
     }
-
-    SECTION("Parsing a line with writing to the zero register throws a syntax error") {
-
-        std::string input = "addi $0, $1, 100";
-        AddiParser parser;
-        REQUIRE_THROWS_AS(parser.parse(input), SyntaxError);        
-    }
 }
