@@ -77,7 +77,11 @@ bool RegisterBank::readRegister(word_t num, word_t& value) const {
 // Writes a register
 bool RegisterBank::writeRegister(word_t num, word_t value) {
 
-    if (num < 1 || num >= NUM_REGISTERS) return false;
+    if (num >= NUM_REGISTERS) return false;
     this->m_arrRegisters[num] = value;
+
+    // Always reset the zero register to 0
+    this->m_arrRegisters[0] = 0;
+
     return true;
 }

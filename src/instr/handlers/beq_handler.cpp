@@ -1,9 +1,11 @@
 #include "instr/handlers/beq_handler.hpp"
 
+#include <iostream>
+
 #include "registers/register_bank.hpp"
 
 // Handles the post decode
-void BeqHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory::addr_t& PC) {
+void BeqHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) {
     
     // Get the destination register value
     word_t destVal;
@@ -26,14 +28,10 @@ void BeqHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const Regis
 
 // Handles the execution
 word_t BeqHandler::onExecute(const InstructionDecodeBuffer& decodeBuffer) {
-
-    // Branch, nothing to do
     return 0;
 }
 
 // Handles the memory stage
 word_t BeqHandler::onMemory(const ExecutionBuffer& executionBuffer, const Memory& memory) {
-
-    // Branch, nothing to do
     return 0;
 }

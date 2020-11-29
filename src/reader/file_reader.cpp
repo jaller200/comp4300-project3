@@ -11,6 +11,7 @@
 #include "instr/instruction_encoder.hpp"
 #include "instr/instruction_parser.hpp"
 #include "instr/instruction_set.hpp"
+#include "instr/opcodes.hpp"
 #include "memory/memory.hpp"
 #include "utils/string_utils.hpp"
 
@@ -45,8 +46,6 @@ bool FileReader::readFile(const std::string& filename, const InstructionSet& ins
     // Set our current addresses
     Memory::addr_t currText = Memory::MEM_USER_START;
     Memory::addr_t currData = Memory::MEM_USER_START + memory.getTextSize();
-    std::cout << "Current Text: " << std::hex << "0x" << currText << std::dec << std::endl;
-    std::cout << "Current Data: " << std::hex << "0x" << currData << std::dec << std::endl;
 
     // Now parse each line
     std::string line;
@@ -105,15 +104,6 @@ bool FileReader::readFile(const std::string& filename, const InstructionSet& ins
 
             // Parse the instruction
             std::vector<Instruction> instrs = parser->parse(line);
-            for (const Instruction& instr : instrs) { 
-                std::cout << "Opcode: " << instr.getOpcode() << std::endl;
-                std::cout << "Funct: " << instr.getFunct() << std::endl;
-                std::cout << "Immediate: " << static_cast<shword_t>(instr.getImmediate()) << std::endl;
-
-                if (instr.getLabel() != "")
-                    std::cout << "Label: " << instr.getLabel() << std::endl << std::endl;
-            }
-
             instructions.insert(instructions.end(), instrs.begin(), instrs.end());
 
             // Add 4*size to the curr text
@@ -121,7 +111,94 @@ bool FileReader::readFile(const std::string& filename, const InstructionSet& ins
         }
         else if (section == "data") {
 
-            // TODO: Handle data
+            // Get the data type
+            std::string second = StringUtils::trim(line.substr(first.length()));
+            std::string type = second.substr(0, line.find_first_of(" \t")+1);
+
+            // All types are built-in — they can't be defined by the user.
+            if (type == ".ascii") {
+
+                // Read the ASCII lines
+                std::string str = StringUtils::trim(second.substr(type.length()));
+                if (str.front() != '"' || str.find_first_of('"', 1) == std::string::npos) {
+                    spdlog::critical("Unable to parse ASCII string. Missing quotes.");
+                    return false;
+                }
+
+                // Now get the string and write it to memory
+                str = str.substr(1, str.length()-2);
+                memory.writeString(currData, str);
+                
+                // Update with the length of the string + 1 for the null terminator
+                currData += str.length() + 1;
+            }
+            else if (type == ".byte") {
+
+                // Get the byte
+                try {
+                    std::string str = StringUtils::trim(second.substr(type.length()));
+                    str = str.substr(0, line.find_first_of(" \t")+1);
+
+                    // Convert to the number
+                    word_t num = StringUtils::toNumber(str);
+                    if (num > 255) {
+                        spdlog::critical("Byte is too large (over 255)");
+                        return false;
+                    }
+
+                    // Otherwise, write the byte
+                    memory.writeByte(currData, static_cast<byte_t>(num));
+                    currData += 1;
+                }
+                catch (std::exception& e) {
+                    spdlog::critical("Unable to convert byte data to number.");
+                    return false;
+                }
+            }
+            else if (type == ".space") {
+
+                // Get the byte
+                try {
+                    std::string str = StringUtils::trim(second.substr(type.length()));
+                    str = str.substr(0, line.find_first_of(" \t")+1);
+
+                    // Convert to the number
+                    word_t num = StringUtils::toNumber(str);
+
+                    // Otherwise, write the bytes
+                    for (int i = 0; i < num; ++i) {
+                        memory.writeByte(currData, 0);
+                        currData += 1;
+                    }
+                }
+                catch (std::exception& e) {
+                    spdlog::critical("Unable to convert space data to number.");
+                    return false;
+                }
+            }
+            else if (type == ".word") {
+
+                // Get the byte
+                try {
+                    std::string str = StringUtils::trim(second.substr(type.length()));
+                    str = str.substr(0, line.find_first_of(" \t")+1);
+
+                    // Convert to the number
+                    word_t num = StringUtils::toNumber(str);
+
+                    // Otherwise, write the word
+                    memory.writeWord(currData, num);
+                    currData += 4;
+                }
+                catch (std::exception& e) {
+                    spdlog::critical("Unable to convert word data to number.");
+                    return false;
+                }
+            }
+            else {
+                spdlog::critical("Unable to parse unknown data type {}", type);
+                return false;
+            }
         }
     }
 
@@ -143,12 +220,26 @@ bool FileReader::readFile(const std::string& filename, const InstructionSet& ins
             Memory::addr_t addr = search->second;
             if (instr.getType() == InstructionType::I_FORMAT) {
 
-                // Get the signed difference 
-                shword_t diff = static_cast<shword_t>(addr - (currText + 4));
-                std::cout << diff << std::endl;
+                if (instr.getOpcode() == static_cast<word_t>(Opcodes::OPCODE_LUI)) {
 
-                // Set the immediate to this signed difference
-                instr.setImmediate(static_cast<hword_t>(diff));
+                    // Get the upper 16-bits
+                    word_t val = (addr >> 16);
+                    instr.setImmediate(static_cast<hword_t>(val));
+                }
+                else if (instr.getOpcode() == static_cast<word_t>(Opcodes::OPCODE_ORI)) {
+
+                    // Get the lower 16-bits
+                    word_t val = (addr & 0xFFFF);
+                    instr.setImmediate(static_cast<hword_t>(val));
+                }
+                else {
+
+                    // Get the signed difference 
+                    shword_t diff = static_cast<shword_t>(addr - (currText + 4));
+
+                    // Set the immediate to this signed difference
+                    instr.setImmediate(static_cast<hword_t>(diff));
+                }
             }
             else if (instr.getType() == InstructionType::J_FORMAT) {
                 // TODO: Handle this

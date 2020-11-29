@@ -1,9 +1,11 @@
 #include "instr/handlers/slt_handler.hpp"
 
+#include <iostream>
+
 #include "registers/register_bank.hpp"
 
 // Handles the post decode
-void SltHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory::addr_t& PC) {
+void SltHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) {
 }
 
 // Handles the execution
@@ -13,5 +15,5 @@ word_t SltHandler::onExecute(const InstructionDecodeBuffer& decodeBuffer) {
 
 // Handles the memory stage
 word_t SltHandler::onMemory(const ExecutionBuffer& executionBuffer, const Memory& memory) {
-    return 0;
+    return executionBuffer.wOutput;
 }

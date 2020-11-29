@@ -55,9 +55,6 @@ std::vector<Instruction> SubiParser::parse(const std::string& line) const {
     if (regDest == -1 || regSrc == -1)
         throw SyntaxError("Invalid Syntax for SUBI: Invalid register(s)", trimmedLine);
 
-    if (regDest == 0)
-        throw SyntaxError("Invalid Syntax for SUBI: Cannot write to the $zero register", trimmedLine);
-
     sword_t limit = (Instruction::LIMIT_IMM + 1) / 2;
     if (imm >= limit || imm < -limit)
         throw SyntaxError("Invalid Syntax for SUBI: Out of bounds immediate", trimmedLine);

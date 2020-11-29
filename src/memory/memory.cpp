@@ -39,8 +39,39 @@ bool Memory::readString(addr_t addr, ascii_t& str) {
     if (offset == -1) return false;
 
     // Now iterate through until we hit a null terminator or end of memory
+    bool specialChar = false;
     while (offset < this->m_vecMemory.capacity() && this->m_vecMemory[offset] != '\0') {
-        str.push_back(this->m_vecMemory[offset]);
+
+        if (specialChar) {
+
+            // List comes from here:
+            // https://stackoverflow.com/questions/10220401/rules-for-c-string-literals-escape-character
+            
+            // Get the char
+            char ch = this->m_vecMemory[offset];
+            if (ch == 'a')          str.push_back('\x07');      // alert (bell)
+            else if (ch == 'b')     str.push_back('\x08');      // backspace
+            else if (ch == 't')     str.push_back('\x09');      // tab
+            else if (ch == 'n')     str.push_back('\x0A');      // new line (or tab feed)
+            else if (ch == 'v')     str.push_back('\x0B');      // vertical tab
+            else if (ch == 'f')     str.push_back('\x0C');      // form feed
+            else if (ch == 'r')     str.push_back('\x0D');      // carriage return
+            else if (ch == 'e')     str.push_back('\x1B');      // escape (non-standard GCC extension)
+            else if (ch == '"')     str.push_back('"');         // double quote
+            else if (ch == '\'')    str.push_back('\'');        // single quote
+            else if (ch == '?')     str.push_back('?');         // question mark
+            else if (ch == '\\')    str.push_back('\\');        // backslash
+            
+            // NOTE: Not handling number formats yet
+        }
+        else {
+            if (this->m_vecMemory[offset] == '\\')
+                specialChar = true;
+            else {
+                str.push_back(this->m_vecMemory[offset]);
+            }
+        }
+
         offset++;
     }
 

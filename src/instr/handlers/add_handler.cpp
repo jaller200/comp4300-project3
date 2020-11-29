@@ -2,8 +2,7 @@
 
 
 // Handles the post decode
-void AddHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory::addr_t& PC) {
-    // Not a branch, nothing to do
+void AddHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) {
 }
 
 // Handles the execution
@@ -15,7 +14,5 @@ word_t AddHandler::onExecute(const InstructionDecodeBuffer& decodeBuffer) {
 
 // Handles the memory stage
 word_t AddHandler::onMemory(const ExecutionBuffer& executionBuffer, const Memory& memory) {
-    
-    // Nothing to do here
-    return 0;
+    return executionBuffer.wOutput;
 }

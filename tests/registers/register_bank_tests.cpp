@@ -126,7 +126,6 @@ TEST_CASE("Converting a string to a register number works properly") {
  * Invalid Tests:
  *      num is immediate outside the boundary (32)
  *      num is far outside the boundary (60)
- *      attempting to write to register 0
  *      
  */
 TEST_CASE("Register bank can be written to / read from properly") {
@@ -163,22 +162,12 @@ TEST_CASE("Register bank can be written to / read from properly") {
         REQUIRE(value == 2147483647);
     }
 
-    SECTION("Writing and reading to register 1 works properly") {
+    SECTION("Writing and reading to register 0 works properly (hardcoded to zero)") {
 
         RegisterBank rb;
-        REQUIRE(rb.writeRegister(1, 100) == true);
+        REQUIRE(rb.writeRegister(0, 100) == true);
 
         word_t value;
-        REQUIRE(rb.readRegister(1, value) == true);
-        REQUIRE(value == 100);
-    }
-
-    SECTION("Writing register 0 fails, and reading register 0 succeeds") {
-
-        RegisterBank rb;
-        REQUIRE_FALSE(rb.writeRegister(0, 100));
-
-        word_t value = 100;
         REQUIRE(rb.readRegister(0, value) == true);
         REQUIRE(value == 0);
     }

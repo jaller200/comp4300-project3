@@ -3,7 +3,7 @@
 #include "registers/register_bank.hpp"
 
 // Handles the post decode
-void BneHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory::addr_t& PC) {
+void BneHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) {
     
     // Get the destination register value
     word_t destVal;
@@ -26,14 +26,10 @@ void BneHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const Regis
 
 // Handles the execution
 word_t BneHandler::onExecute(const InstructionDecodeBuffer& decodeBuffer) {
-
-    // Branch, nothing to do
     return 0;
 }
 
 // Handles the memory stage
 word_t BneHandler::onMemory(const ExecutionBuffer& executionBuffer, const Memory& memory) {
-
-    // Branch, nothing to do
     return 0;
 }

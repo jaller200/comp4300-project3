@@ -11,12 +11,12 @@
 /**
  * A handler for the ADD instruction
  */
-class AddiHandler: public InstructionHandler {
+class LuiHandler: public InstructionHandler {
 public:
 
     // MARK: -- Construction
-    AddiHandler() = default;
-    ~AddiHandler() = default;
+    LuiHandler() = default;
+    ~LuiHandler() = default;
 
 
     // MARK: -- Handler Methods

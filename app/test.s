@@ -1,12 +1,15 @@
 .text
 main:
-    add     $1, $2, $3
-    addi    $1, $2, 0x1000
-    b       main
-    beq     $1, $2, main
-    beqz    $1, main
-    bge     $1, $2, main
-    bne     $1, $2, main
-    nop
-    subi    $1, $2, 0x1000
+    la      $a0, test
+    li      $v1, 1024
+    li      $v0, 8
     syscall
+
+    li      $v0, 4
+    syscall
+
+    li      $v0, 10
+    syscall
+
+.data
+test:   .space 1024

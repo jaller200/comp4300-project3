@@ -1,14 +1,18 @@
 #include "instr/handlers/syscall_handler.hpp"
 
+#include <cstdio>
+#include <iostream>
+
 #include "spdlog/spdlog.h"
 
+#include "memory/memory.hpp"
 #include "registers/register_bank.hpp"
 
 // Handles the post decode
-void SyscallHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory::addr_t& PC) {
+void SyscallHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) {
 
     // Handle the system call here
-    this->handleSystemCall(decodeBuffer, registerBank);
+    this->handleSystemCall(decodeBuffer, registerBank, memory);
 
     // Now change this to a NOP (SLL)
     decodeBuffer.wFunct = 0;
@@ -34,7 +38,7 @@ word_t SyscallHandler::onMemory(const ExecutionBuffer& executionBuffer, const Me
 
 // MARK: -- Private Syscall Methods
 
-void SyscallHandler::handleSystemCall(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank) {
+void SyscallHandler::handleSystemCall(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory) {
 
     // First, get the syscall type from $v0 (2)
     word_t type;
@@ -45,6 +49,56 @@ void SyscallHandler::handleSystemCall(InstructionDecodeBuffer& decodeBuffer, con
 
     // Now, handle based on the type
     switch (type) {
+
+        // Print string
+        case 4: {
+
+            // Address of output: $a0
+            word_t addr;
+            if (!registerBank.readRegister(4, addr)) {
+                spdlog::critical("SIGSYS: Invalid arguments for SYSCALL 4");
+                exit(1);
+            }
+
+            // Read the string
+            std::string str;
+            if (!memory.readString(addr, str)) {
+                spdlog::critical("SIGSEGV: Unable to read string at address {}", addr);
+                exit(1);
+            }
+
+            // Print the string
+            std::cout << std::string(str);
+        }
+
+        // Read string
+        case 8: {
+
+            // Address of Input: $a0
+            // Max Numbr of Chars: $a1
+            word_t addr;
+            word_t num;
+
+            if (!registerBank.readRegister(4, addr) || !registerBank.readRegister(5, num)) {
+                spdlog::critical("SIGSYS: Invalid arguments for SYSCALL 8");
+                exit(1);
+            }
+
+            std::cout << "Addr: " << addr << std::endl;
+            std::cout << "Buf: " << num << std::endl;
+
+            // Create our buffer
+            char buffer[num];
+            std::cin >> buffer;
+
+            // Now write this to the location
+            for (int i = 0; i < num; ++i) {
+                if (!memory.writeByte(addr+i, buffer[i])) {
+                    spdlog::critical("SIGSEGV: Unable to write to memory at address {}", addr+i);
+                    exit(1);
+                }
+            }
+        }
 
         // Exit
         case 10: {

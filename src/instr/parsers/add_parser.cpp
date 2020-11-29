@@ -46,9 +46,6 @@ std::vector<Instruction> AddParser::parse(const std::string& line) const {
     if (regDest == -1 || regSrc1 == -1 || regSrc2 == -1)
         throw SyntaxError("Invalid Syntax for ADD: Invalid register(s)", trimmedLine);
 
-    if (regDest == 0)
-        throw SyntaxError("Invalid Syntax for ADD: Cannot write to the $zero register", trimmedLine);
-
     // Otherwise, emplace back a new instruction
     Instruction instr;
     instr.setType(InstructionType::R_FORMAT);

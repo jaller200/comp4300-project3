@@ -9,14 +9,14 @@
 #include "types.hpp"
 
 /**
- * A handler for the ADD instruction
+ * A handler for the ORI instruction
  */
-class AddiHandler: public InstructionHandler {
+class SllHandler: public InstructionHandler {
 public:
 
     // MARK: -- Construction
-    AddiHandler() = default;
-    ~AddiHandler() = default;
+    SllHandler() = default;
+    ~SllHandler() = default;
 
 
     // MARK: -- Handler Methods

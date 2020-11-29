@@ -1,6 +1,8 @@
 #include "simulator.hpp"
 
 #include <exception>
+#include <iostream>
+#include <unistd.h>
 
 #include "spdlog/spdlog.h"
 
@@ -51,17 +53,30 @@ void Simulator::run() {
     word_t instrCountTotal = 0;
     word_t instrCountNOP = 0;
 
+    // Output
+    std::cout << "Output:" << std::endl;
+    std::cout << "------------" << std::endl;
+
     // Finally, we can begin.
     bool running = true;            // This will keep track of whether we are still running
     while (running) {
+
+        //sleep(1);
     
         // First, backup the old buffer and fetch the new instruction
         oldBufferIF = newBufferIF;
         newBufferIF = this->handleInstructionFetch(PC);
 
+        if (newBufferIF.wInstruction == 0)
+            instrCountNOP++;
+
         // Now, decode our instruction
         oldBufferID = newBufferID;
         newBufferID = this->handleInstructionDecode(newBufferIF, PC);
+
+        // If we want to kill the program, exit
+        if (newBufferID.bExit == true)
+            running = false;
 
         // Next, execute the instruction
         oldBufferEX = newBufferEX;
@@ -73,7 +88,13 @@ void Simulator::run() {
 
         // Finally, handle the write back stage
         this->handleWriteBack(newBufferMEM);
+
+        // Update our clock cycles
+        clockCycles++;
+        instrCountTotal++;
     }
+
+    std::cout << "------------" << std::endl;
 
     // Now print our stats
     spdlog::info("Total Clock Cycles: {}", clockCycles);
@@ -130,24 +151,32 @@ InstructionDecodeBuffer Simulator::handleInstructionDecode(const InstructionFetc
     if (instrType == InstructionType::I_FORMAT) {
 
         // Get our immedate value, source register (and read it), and our destination register
+        buffer.bExit = false;
+        buffer.wFunct = 0;
         buffer.wImmediate = instr.getImmediate();
         buffer.wRegDest = instr.getRt();
         buffer.wRegSrc1 = instr.getRs();
         buffer.wRegSrc2 = -1;
         this->m_registerBank->readRegister(buffer.wRegSrc1, buffer.wValSrc1);
+        buffer.wValSrc2 = 0;
     }
     else if (instrType == InstructionType::J_FORMAT) {
 
         // Just get our address (immediate) value
+        buffer.bExit = false;
+        buffer.wFunct = 0;
         buffer.wImmediate = instr.getAddr();
         buffer.wRegDest = -1;
         buffer.wRegSrc1 = -1;
         buffer.wRegSrc2 = -1;
+        buffer.wValSrc1 = 0;
+        buffer.wValSrc2 = 0;
     }
     else if (instrType == InstructionType::R_FORMAT) {
 
         // Get both source registers and read them, the destination register, and the shamt (immediate)
         // as well as the funct
+        buffer.bExit = false;
         buffer.wFunct = instr.getFunct();
         buffer.wImmediate = instr.getShamt();
         buffer.wRegDest = instr.getRd();
@@ -165,7 +194,7 @@ InstructionDecodeBuffer Simulator::handleInstructionDecode(const InstructionFetc
     }
 
     // Handle any post decoding and return the buffer (generally handles branches / syscalls)
-    handler->onPostDecode(buffer, *this->m_registerBank.get(), PC);
+    handler->onPostDecode(buffer, *this->m_registerBank.get(), *this->m_memory.get(), PC);
     return buffer;
 }
 

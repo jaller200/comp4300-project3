@@ -27,7 +27,7 @@ public:
      * @param registerBank The register bank
      * @param PC The program counter
      */
-    void onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory::addr_t& PC) override;
+    void onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) override;
 
     /**
      * Handles any execution necessary.
@@ -52,6 +52,7 @@ private:
      * Handles a system call.
      * @param decodeBuffer The decode buffer
      * @param registerBank The register bank
+     * @param memory The memory
      */
-    void handleSystemCall(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank);
+    void handleSystemCall(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory);
 };
