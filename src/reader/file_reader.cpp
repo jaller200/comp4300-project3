@@ -106,7 +106,12 @@ bool FileReader::readFile(const std::string& filename, const InstructionSet& ins
             // Parse the instruction
             std::vector<Instruction> instrs = parser->parse(line);
             for (const Instruction& instr : instrs) { 
-                std::cout << "Val: " << instr.getImmediate() << std::endl;
+                std::cout << "Opcode: " << instr.getOpcode() << std::endl;
+                std::cout << "Funct: " << instr.getFunct() << std::endl;
+                std::cout << "Immediate: " << static_cast<shword_t>(instr.getImmediate()) << std::endl;
+
+                if (instr.getLabel() != "")
+                    std::cout << "Label: " << instr.getLabel() << std::endl << std::endl;
             }
 
             instructions.insert(instructions.end(), instrs.begin(), instrs.end());
@@ -140,6 +145,7 @@ bool FileReader::readFile(const std::string& filename, const InstructionSet& ins
 
                 // Get the signed difference 
                 shword_t diff = static_cast<shword_t>(addr - (currText + 4));
+                std::cout << diff << std::endl;
 
                 // Set the immediate to this signed difference
                 instr.setImmediate(static_cast<hword_t>(diff));

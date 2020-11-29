@@ -17,6 +17,9 @@
  */
 struct InstructionDecodeBuffer {
 
+    /** Whether or not to exit. */
+    bool bExit;
+
     /** The funct for any R-Type instructions. */
     word_t wFunct;
 
