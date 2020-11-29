@@ -59,15 +59,20 @@ void Simulator::run() {
 
     // Finally, we can begin.
     bool running = true;            // This will keep track of whether we are still running
-    while (running) {
-
-        //sleep(1);
+    int flush = 5;
+    while (running && flush > 0) {
     
         // First, backup the old buffer and fetch the new instruction
         oldBufferIF = newBufferIF;
-        newBufferIF = this->handleInstructionFetch(PC);
 
-        if (newBufferIF.wInstruction == 0)
+        // If we are running, get instructions. Otherwise, get "NOPs" to finish the buffer
+        if (running)
+            newBufferIF = this->handleInstructionFetch(PC);
+        else
+            newBufferIF.wInstruction = 0x00000000;
+
+        // If the instruction is a NOP, increase
+        if (newBufferIF.wInstruction == 0 && running)
             instrCountNOP++;
 
         // Now, decode our instruction
@@ -92,6 +97,9 @@ void Simulator::run() {
         // Update our clock cycles
         clockCycles++;
         instrCountTotal++;
+
+        if (!running)
+            flush--;
     }
 
     std::cout << "------------" << std::endl;

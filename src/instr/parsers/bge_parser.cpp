@@ -56,8 +56,8 @@ std::vector<Instruction> BgeParser::parse(const std::string& line) const {
     instr1.setType(InstructionType::R_FORMAT);
     instr1.setOpcode(static_cast<word_t>(Opcodes::OPCODE_R_TYPE));
     instr1.setRd(1);
-    instr1.setRs(regSrc);
-    instr1.setRt(regDest);
+    instr1.setRs(regDest);
+    instr1.setRt(regSrc);
     instr1.setShamt(0);
     instr1.setFunct(static_cast<word_t>(Functions::FUNCT_SLT));
     instructions.emplace_back(instr1);

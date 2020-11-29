@@ -19,6 +19,7 @@
 #include "instr/handlers/addi_handler.hpp"
 #include "instr/handlers/beq_handler.hpp"
 #include "instr/handlers/bne_handler.hpp"
+#include "instr/handlers/lb_handler.hpp"
 #include "instr/handlers/lui_handler.hpp"
 #include "instr/handlers/ori_handler.hpp"
 #include "instr/handlers/sll_handler.hpp"
@@ -33,6 +34,7 @@
 #include "instr/parsers/bge_parser.hpp"
 #include "instr/parsers/bne_parser.hpp"
 #include "instr/parsers/la_parser.hpp"
+#include "instr/parsers/lb_parser.hpp"
 #include "instr/parsers/li_parser.hpp"
 #include "instr/parsers/lui_parser.hpp"
 #include "instr/parsers/nop_parser.hpp"
@@ -68,6 +70,7 @@ int main(int argc, char ** argv) {
     instrSet->registerIType("addi", static_cast<word_t>(Opcodes::OPCODE_ADDI), std::unique_ptr<AddiParser>(new AddiParser()), std::unique_ptr<AddiHandler>(new AddiHandler()));
     instrSet->registerIType("beq", static_cast<word_t>(Opcodes::OPCODE_BEQ), std::unique_ptr<BeqParser>(new BeqParser()), std::unique_ptr<BeqHandler>(new BeqHandler()));
     instrSet->registerIType("bne", static_cast<word_t>(Opcodes::OPCODE_BNE), std::unique_ptr<BneParser>(new BneParser()), std::unique_ptr<BneHandler>(new BneHandler()));
+    instrSet->registerIType("lb", static_cast<word_t>(Opcodes::OPCODE_LB), std::unique_ptr<LbParser>(new LbParser()), std::unique_ptr<LbHandler>(new LbHandler()));
     instrSet->registerIType("lui", static_cast<word_t>(Opcodes::OPCODE_LUI), std::unique_ptr<LuiParser>(new LuiParser()), std::unique_ptr<LuiHandler>(new LuiHandler()));
     instrSet->registerIType("ori", static_cast<word_t>(Opcodes::OPCODE_ORI), std::unique_ptr<OriParser>(new OriParser()), std::unique_ptr<OriHandler>(new OriHandler()));
 

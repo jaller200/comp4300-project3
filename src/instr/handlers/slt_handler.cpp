@@ -10,6 +10,8 @@ void SltHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const Regis
 
 // Handles the execution
 word_t SltHandler::onExecute(const InstructionDecodeBuffer& decodeBuffer) {
+
+    //std::cout << "SLL: Comparing Val 1 (" << decodeBuffer.wValSrc1 << ") with Val 2 (" << decodeBuffer.wValSrc2 << ")" << std::endl;
     return (decodeBuffer.wValSrc1 < decodeBuffer.wValSrc2) ? 1 : 0;
 }
 

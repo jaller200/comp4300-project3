@@ -69,6 +69,7 @@ void SyscallHandler::handleSystemCall(InstructionDecodeBuffer& decodeBuffer, con
 
             // Print the string
             std::cout << std::string(str);
+            break;
         }
 
         // Read string
@@ -84,12 +85,13 @@ void SyscallHandler::handleSystemCall(InstructionDecodeBuffer& decodeBuffer, con
                 exit(1);
             }
 
-            std::cout << "Addr: " << addr << std::endl;
-            std::cout << "Buf: " << num << std::endl;
-
             // Create our buffer
             char buffer[num];
+            memset(buffer, 0, num);
             std::cin >> buffer;
+            
+            size_t len = strlen(buffer);
+            buffer[(len == num) ? num-1 : len] = '\0';
 
             // Now write this to the location
             for (int i = 0; i < num; ++i) {
@@ -98,6 +100,7 @@ void SyscallHandler::handleSystemCall(InstructionDecodeBuffer& decodeBuffer, con
                     exit(1);
                 }
             }
+            break;
         }
 
         // Exit

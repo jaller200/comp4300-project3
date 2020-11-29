@@ -113,10 +113,10 @@ bool FileReader::readFile(const std::string& filename, const InstructionSet& ins
 
             // Get the data type
             std::string second = StringUtils::trim(line.substr(first.length()));
-            std::string type = second.substr(0, line.find_first_of(" \t")+1);
+            std::string type = second.substr(0, second.find_first_of(" \t"));
 
             // All types are built-in — they can't be defined by the user.
-            if (type == ".ascii") {
+            if (type == ".asciiz") {
 
                 // Read the ASCII lines
                 std::string str = StringUtils::trim(second.substr(type.length()));
