@@ -12,7 +12,7 @@ void SltHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const Regis
 word_t SltHandler::onExecute(const InstructionDecodeBuffer& decodeBuffer) {
 
     //std::cout << "SLL: Comparing Val 1 (" << decodeBuffer.wValSrc1 << ") with Val 2 (" << decodeBuffer.wValSrc2 << ")" << std::endl;
-    return (decodeBuffer.wValSrc1 < decodeBuffer.wValSrc2) ? 1 : 0;
+    return (static_cast<sword_t>(decodeBuffer.wValSrc1) < static_cast<sword_t>(decodeBuffer.wValSrc2)) ? 1 : 0;
 }
 
 // Handles the memory stage

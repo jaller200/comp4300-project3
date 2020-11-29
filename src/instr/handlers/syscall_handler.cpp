@@ -50,6 +50,20 @@ void SyscallHandler::handleSystemCall(InstructionDecodeBuffer& decodeBuffer, con
     // Now, handle based on the type
     switch (type) {
 
+        // Print Integer
+        case 1: {
+
+            // Get the integer to print
+            word_t integer;
+            if (!registerBank.readRegister(4, integer)) {
+                spdlog::critical("SIGSYS: Invalid arguments for SYSCALL 4");
+                exit(1);
+            }
+
+            std::cout << integer << std::endl;
+            break;
+        }
+
         // Print string
         case 4: {
 
