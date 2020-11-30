@@ -1,7 +1,18 @@
 # Directories
 bin/
 build/
+log/
+logs/
 obj/
+
+# VSCode Directories
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+.history/
 
 # Prerequisites
 *.d
