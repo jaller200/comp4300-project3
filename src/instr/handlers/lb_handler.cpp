@@ -7,7 +7,7 @@
 #include "registers/register_bank.hpp"
 
 // Handles the post decode
-void LbHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) {
+void LbHandler::onDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) {
 }
 
 // Handles the execution

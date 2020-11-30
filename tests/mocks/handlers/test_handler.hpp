@@ -20,7 +20,7 @@ public:
      * @param registerBank The register bank
      * @param PC The program counter
      */
-    virtual void onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) override;
+    virtual void onDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) override;
 
     /**
      * Handles any execution necessary.

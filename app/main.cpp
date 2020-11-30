@@ -48,6 +48,7 @@
 #include "instr/parsers/subi_parser.hpp"
 #include "instr/parsers/syscall_parser.hpp"
 
+
 // MARK: -- Setup Methods
 
 /**
@@ -87,12 +88,11 @@ std::unique_ptr<InstructionSet> setupInstructions() {
 
 /**
  * Sets up things such as the logger.
- * @param debug Whether or not to be in debug mode
  */
-void setupLogger(bool debug) {
+void setupLogger() {
 
+    // Create our console link
     auto consoleSink = std::shared_ptr<spdlog::sinks::stdout_color_sink_mt>(new spdlog::sinks::stdout_color_sink_mt());
-    consoleSink->set_level(debug ? spdlog::level::debug : spdlog::level::info);
     
     // Get the current time
     std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -100,11 +100,9 @@ void setupLogger(bool debug) {
     );
 
     std::string file = "logs/log-" + std::to_string(ms.count()) + ".log";
-
     std::shared_ptr<spdlog::sinks::basic_file_sink_mt> fileSink = nullptr;
     try {
         fileSink = std::shared_ptr<spdlog::sinks::basic_file_sink_mt>(new spdlog::sinks::basic_file_sink_mt(file));
-        fileSink->set_level(spdlog::level::trace);
     }
     catch (spdlog::spdlog_ex& e) {
         std::cerr << "error: unable to open log file " << file << " for logging" << std::endl;
@@ -146,11 +144,10 @@ int main(int argc, char ** argv) {
         debug = (debugFlag == "--debug" || debugFlag == "-d");
     }
 
-    std::cout << debug << std::endl;
-
     // Set up our logging
-    setupLogger(debug);
-    spdlog::debug("test");
+    setupLogger();
+    if (debug)
+        spdlog::set_level(spdlog::level::trace);
 
     // Get our instruction set
     std::unique_ptr<InstructionSet> instrSet = setupInstructions();

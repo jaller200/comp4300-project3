@@ -202,7 +202,7 @@ InstructionDecodeBuffer Simulator::handleInstructionDecode(const InstructionFetc
     }
 
     // Handle any post decoding and return the buffer (generally handles branches / syscalls)
-    handler->onPostDecode(buffer, *this->m_registerBank.get(), *this->m_memory.get(), PC);
+    handler->onDecode(buffer, *this->m_registerBank.get(), *this->m_memory.get(), PC);
     return buffer;
 }
 

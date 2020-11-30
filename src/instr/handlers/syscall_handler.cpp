@@ -9,7 +9,7 @@
 #include "registers/register_bank.hpp"
 
 // Handles the post decode
-void SyscallHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) {
+void SyscallHandler::onDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) {
 
     // Handle the system call here
     this->handleSystemCall(decodeBuffer, registerBank, memory);

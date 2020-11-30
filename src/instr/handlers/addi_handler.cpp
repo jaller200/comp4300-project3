@@ -3,7 +3,7 @@
 #include <iostream>
 
 // Handles the post decode
-void AddiHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) {
+void AddiHandler::onDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) {
 }
 
 // Handles the execution

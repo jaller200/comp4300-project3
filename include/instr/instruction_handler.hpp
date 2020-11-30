@@ -32,7 +32,7 @@ public:
      * @param memory Memory for things like system calls
      * @param PC The program counter
      */
-    virtual void onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) = 0;
+    virtual void onDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) = 0;
 
     /**
      * Handles any execution necessary.

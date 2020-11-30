@@ -5,7 +5,7 @@
 #include "registers/register_bank.hpp"
 
 // Handles the post decode
-void BeqHandler::onPostDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) {
+void BeqHandler::onDecode(InstructionDecodeBuffer& decodeBuffer, const RegisterBank& registerBank, Memory& memory, Memory::addr_t& PC) {
     
     // Get the destination register value
     word_t destVal;

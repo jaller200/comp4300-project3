@@ -7,6 +7,7 @@
 
 #include "spdlog/spdlog.h"
 
+#include "exception/syntax_error.hpp"
 #include "instr/instruction.hpp"
 #include "instr/instruction_encoder.hpp"
 #include "instr/instruction_parser.hpp"
@@ -103,11 +104,17 @@ bool FileReader::readFile(const std::string& filename, const InstructionSet& ins
             }
 
             // Parse the instruction
-            std::vector<Instruction> instrs = parser->parse(line);
-            instructions.insert(instructions.end(), instrs.begin(), instrs.end());
+            try {
+                std::vector<Instruction> instrs = parser->parse(line);
+                instructions.insert(instructions.end(), instrs.begin(), instrs.end());
 
-            // Add 4*size to the curr text
-            currText += 4 * instrs.size();
+                // Add 4*size to the curr text
+                currText += 4 * instrs.size();
+            }
+            catch (const SyntaxError& syntaxError) {
+                spdlog::critical(syntaxError.what());
+                return false;
+            }
         }
         else if (section == "data") {
 
@@ -220,6 +227,7 @@ bool FileReader::readFile(const std::string& filename, const InstructionSet& ins
             Memory::addr_t addr = search->second;
             if (instr.getType() == InstructionType::I_FORMAT) {
 
+                // Certain instructions need to be post-processed
                 if (instr.getOpcode() == static_cast<word_t>(Opcodes::OPCODE_LUI)) {
 
                     // Get the upper 16-bits
@@ -236,8 +244,6 @@ bool FileReader::readFile(const std::string& filename, const InstructionSet& ins
 
                     // Get the signed difference 
                     shword_t diff = static_cast<shword_t>(addr - (currText + 4));
-
-                    // Set the immediate to this signed difference
                     instr.setImmediate(static_cast<hword_t>(diff));
                 }
             }
