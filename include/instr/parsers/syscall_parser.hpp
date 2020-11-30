@@ -8,7 +8,7 @@
 #include "types.hpp"
 
 /**
- * A parser for the ADDI instruction (opcode 8)
+ * A parser for the SYSCALL (system call) instruction (opcode 0, funct 12).
  */
 class SyscallParser: public InstructionParser {
 public:
@@ -34,7 +34,7 @@ public:
      * 
      * @param line The line to parse
      * @throw SyntaxError If there is a syntax error
-     * @return A vector with a single instruction (opcode 8)
+     * @return A vector with the instructions
      */
     std::vector<Instruction> parse(const std::string& line) const;
 };

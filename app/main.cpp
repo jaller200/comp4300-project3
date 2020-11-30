@@ -144,7 +144,8 @@ int main(int argc, char ** argv) {
         debug = (debugFlag == "--debug" || debugFlag == "-d");
     }
 
-    // Set up our logging
+    // Set up our logging - for some reason this works some of the time, and not other times
+    // note exactly sure why
     setupLogger();
     if (debug)
         spdlog::set_level(spdlog::level::trace);

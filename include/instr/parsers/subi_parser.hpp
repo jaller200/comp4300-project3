@@ -8,7 +8,7 @@
 #include "types.hpp"
 
 /**
- * A parser for the ADDI instruction (opcode 8)
+ * A parser for the SUBI (subtract immediate) psuedo-instruction.
  */
 class SubiParser: public InstructionParser {
 public:
@@ -21,7 +21,7 @@ public:
     // MARK: -- Parse Methods
 
     /**
-     * Parses a line with the SUBI psuedo instruction.
+     * Parses a line with the SUBI (subtract immediate) psuedo-instruction.
      * 
      * The format for this instruction is as follows:
      * 

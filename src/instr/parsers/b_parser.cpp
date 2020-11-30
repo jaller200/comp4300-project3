@@ -14,7 +14,7 @@
 
 // MARK: -- Parse Methods
 
-// Parses an ADD instruction
+// Parses a B instruction
 std::vector<Instruction> BParser::parse(const std::string& line) const {
     
     std::vector<Instruction> instructions;

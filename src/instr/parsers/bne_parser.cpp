@@ -15,7 +15,7 @@
 
 // MARK: -- Parse Methods
 
-// Parses an ADD instruction
+// Parses a BNE instruction
 std::vector<Instruction> BneParser::parse(const std::string& line) const {
     
     std::vector<Instruction> instructions;
@@ -29,10 +29,10 @@ std::vector<Instruction> BneParser::parse(const std::string& line) const {
     //
     //      beq dest, src, label
     //
-    std::regex beq_rgx("^(bne)\\s+(\\$\\w+),\\s*(\\$\\w+),\\s*(\\w+)");
+    std::regex bne_rgx("^(bne)\\s+(\\$\\w+),\\s*(\\$\\w+),\\s*(\\w+)");
     std::smatch match;
 
-    if (!std::regex_search(trimmedLine.cbegin(), trimmedLine.cend(), match, beq_rgx))
+    if (!std::regex_search(trimmedLine.cbegin(), trimmedLine.cend(), match, bne_rgx))
         throw SyntaxError("Invalid Syntax for BNE: Invalid format", trimmedLine);
 
     // Do a quick sanity check for the size (should be exactly 4)

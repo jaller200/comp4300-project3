@@ -14,7 +14,7 @@
 
 // MARK: -- Parse Methods
 
-// Parses an ADD instruction
+// Parses an NOP instruction
 std::vector<Instruction> NopParser::parse(const std::string& line) const {
     
     std::vector<Instruction> instructions;
@@ -28,10 +28,10 @@ std::vector<Instruction> NopParser::parse(const std::string& line) const {
     //
     //      add dest, src1, src2
     //
-    std::regex b_rgx("^(nop)");
+    std::regex nop_rgx("^(nop)");
     std::smatch match;
 
-    if (!std::regex_search(trimmedLine.cbegin(), trimmedLine.cend(), match, b_rgx))
+    if (!std::regex_search(trimmedLine.cbegin(), trimmedLine.cend(), match, nop_rgx))
         throw SyntaxError("Invalid Syntax for NOP: Invalid format", trimmedLine);
 
     // Do a quick sanity check for the size (should be exactly 4)

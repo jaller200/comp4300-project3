@@ -8,7 +8,7 @@
 #include "types.hpp"
 
 /**
- * A parser for the ADD instruction (opcode 0, funct 32)
+ * A parser for the ADD (add) instruction (opcode 0, funct 32)
  */
 class AddParser: public InstructionParser {
 public:
@@ -21,7 +21,7 @@ public:
     // MARK: -- Parse Methods
 
     /**
-     * Parses a line with the ADD instruction (opcode 0, funct 32)
+     * Parses a line with the ADD (add) instruction (opcode 0, funct 32)
      * 
      * The format for this instruction is as follows:
      * 
@@ -32,7 +32,7 @@ public:
      * 
      * @param line The line to parse
      * @throw SyntaxError If there is a syntax error
-     * @return A vector with a single instruction (opcode 0, funct 32)
+     * @return A vector with the instructions
      */
     std::vector<Instruction> parse(const std::string& line) const;
 };

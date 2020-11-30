@@ -15,7 +15,7 @@
 
 // MARK: -- Parse Methods
 
-// Parses an ADD instruction
+// Parses a BGE instruction
 std::vector<Instruction> BgeParser::parse(const std::string& line) const {
     
     std::vector<Instruction> instructions;

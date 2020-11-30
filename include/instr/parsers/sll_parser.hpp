@@ -8,7 +8,7 @@
 #include "types.hpp"
 
 /**
- * A parser for the ORI instruction (opcode 8)
+ * A parser for the SLL (shift left logical) instruction (opcode 0, funct 0)
  */
 class SllParser: public InstructionParser {
 public:
@@ -21,7 +21,7 @@ public:
     // MARK: -- Parse Methods
 
     /**
-     * Parses a line with the SLL instruction (opcode 0, funct 0)
+     * Parses a line with the SLL (shift left logical) instruction (opcode 0, funct 0)
      * 
      * The format for this instruction is as follows:
      * 
@@ -32,7 +32,7 @@ public:
      * 
      * @param line The line to parse
      * @throw SyntaxError If there is a syntax error
-     * @return A vector with a single instruction (opcode 13)
+     * @return A vector with the instructions
      */
     std::vector<Instruction> parse(const std::string& line) const;
 };

@@ -15,7 +15,7 @@
 
 // MARK: -- Parse Methods
 
-// Parses an ADD instruction
+// Parses a BEQ instruction
 std::vector<Instruction> BeqParser::parse(const std::string& line) const {
     
     std::vector<Instruction> instructions;

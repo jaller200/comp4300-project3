@@ -20,19 +20,21 @@ Most of the project is implemented as a shared library, with the final product b
 
 More details to come later...
 
+_**NOTE**: Due to time constraints, testing of most handlers / parsers is incomplete. Much of the rest of the code covered._
+
 ## Requirements
 **Build Tools**: PipeSim requires CMake 2.8 and up.
 * _CMake 2.8+_
 
 **Compiler**: PipeSim requires C++11 and thus a compiler compatible with it. The program has been tested on the following compilers:
 
-* _clang-5.0.0 on Ubuntu 14.04_
-* _g++-4.8.4 on Ubuntu 14.04_
-* _AppleClang-9.1.0 on macOS_
+* _clang-3.6 on Ubuntu 14.04_
+* _clang-3.7 on Ubuntu 14.04_
+* _g++-4.9.0 on Ubuntu 14.04_
+* _g++-5.0.0 on Ubuntu 14.04_
 
 In addition, I have manually tested it on the following compilers (academic-related):
 
-* _g++\-4.8.5 on CentOS 7_
 * _Apple Clang 11.0.0 (clang-1100.0.33.17) on macOS Mojave_
 
 ## Build Instructions
@@ -79,3 +81,32 @@ This project also uses Catch as the testing framework, which is licensed under t
 
 ## Additional Notes
 Auburn Student ID:  jth0069
+
+### lab3a.s
+|                          |     |
+|--------------------------|-----|
+| Clock Cycles             | 269 |
+| Total Instructions (NOP) | 166 |
+| Total Instructions (All) | 269 |
+
+### lab3b.s 
+**Input: test**
+|                          |     |
+|--------------------------|-----|
+| Clock Cycles             | 64  |
+| Total Instructions (NOP) | 16  |
+| Total Instructions (All) | 64  |
+
+**Input: bob**
+|                          |     |
+|--------------------------|-----|
+| Clock Cycles             | 52  |
+| Total Instructions (NOP) | 11  |
+| Total Instructions (All) | 52  |
+
+### lab3c.s
+|                          |     |
+|--------------------------|-----|
+| Clock Cycles             | 59  |
+| Total Instructions (NOP) | 1   |
+| Total Instructions (All) | 59  |

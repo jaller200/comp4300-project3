@@ -8,7 +8,7 @@
 #include "types.hpp"
 
 /**
- * A parser for the BNE instruction (opcode 5)
+ * A parser for the BNE (branch on not equal) instruction (opcode 5)
  */
 class BneParser: public InstructionParser {
 public:
@@ -21,7 +21,7 @@ public:
     // MARK: -- Parse Methods
 
     /**
-     * Parses a line with the BNE instruction (opcode 5)
+     * Parses a line with the BNE (branch on not equal) instruction (opcode 5)
      * 
      * The format for this instruction is as follows:
      * 
@@ -32,7 +32,7 @@ public:
      * 
      * @param line The line to parse
      * @throw SyntaxError If there is a syntax error
-     * @return A vector with a single instruction (opcode 8)
+     * @return A vector with the instructions
      */
     std::vector<Instruction> parse(const std::string& line) const;
 };
