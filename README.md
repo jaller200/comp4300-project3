@@ -63,10 +63,11 @@ The main executable is built into the `bin` folder. The simulator can be run as 
 ./bin/pipeSim <path/to/file.s>
 ```
 
-If you would like to manually test the build, run the following:
+If you would like to debug the program, pass the debug flag (`--debug` / `-d`) on the command line, as so:
 
 ```
-./bin/pipeSimTests
+./bin/pipeSim <path/to/file.s> --debug
+./bin/pipeSim <path/to/file.s> -d
 ```
 
 ## Author & Copyright
