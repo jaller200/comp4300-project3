@@ -60,7 +60,7 @@ void SyscallHandler::handleSystemCall(InstructionDecodeBuffer& decodeBuffer, con
                 exit(1);
             }
 
-            std::cout << integer << std::endl;
+            spdlog::info(std::to_string(integer));
             break;
         }
 
@@ -82,7 +82,7 @@ void SyscallHandler::handleSystemCall(InstructionDecodeBuffer& decodeBuffer, con
             }
 
             // Print the string
-            std::cout << std::string(str);
+            spdlog::info(str);
             break;
         }
 

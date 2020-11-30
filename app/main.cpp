@@ -150,6 +150,12 @@ int main(int argc, char ** argv) {
     if (debug)
         spdlog::set_level(spdlog::level::trace);
 
+    spdlog::info("Simulator Initiated");
+    spdlog::info("");
+    spdlog::info("{:<5}{:<9}: {}", "", "Filename", filename);
+    spdlog::info("{:<5}{:<9}: {}", "", "Debug", (debug) ? "yes" : "no");
+    spdlog::info("");
+
     // Get our instruction set
     std::unique_ptr<InstructionSet> instrSet = setupInstructions();
 
@@ -165,6 +171,8 @@ int main(int argc, char ** argv) {
         spdlog::critical("Unable to open file {}", filename);
         exit(1);
     }
+
+    spdlog::info("Loaded file {} into memory", filename);
 
     // Now create our simulator
     Simulator simulator(std::move(instrSet), std::move(memory), std::move(registerBank));

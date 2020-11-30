@@ -54,8 +54,12 @@ void Simulator::run() {
     word_t instrCountNOP = 0;
 
     // Output
-    std::cout << "Output:" << std::endl;
-    std::cout << "------------" << std::endl;
+    spdlog::info("Running Simulator...");
+    spdlog::set_pattern("%v");
+
+    spdlog::info("");
+    spdlog::info("Output:");
+    spdlog::info("------------");
 
     // Finally, we can begin.
     bool running = true;            // This will keep track of whether we are still running
@@ -102,7 +106,9 @@ void Simulator::run() {
             flush--;
     }
 
-    std::cout << "------------" << std::endl;
+    spdlog::info("------------");
+    spdlog::info("");
+    spdlog::set_pattern("%+");
 
     // Now print our stats
     spdlog::info("Total Clock Cycles: {}", clockCycles);
