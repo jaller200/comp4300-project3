@@ -1,8 +1,12 @@
+#include <chrono>
+#include <cstdlib>
 #include <iostream>
 #include <memory>
 #include <vector>
 
 #include "spdlog/spdlog.h"
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
 
 #include "instr/functions.hpp"
 #include "instr/instruction_encoder.hpp"
@@ -44,18 +48,13 @@
 #include "instr/parsers/subi_parser.hpp"
 #include "instr/parsers/syscall_parser.hpp"
 
-/**
- * The entry point to the program.
- * @param argc The arguments count
- * @param argv The arguments list
- */
-int main(int argc, char ** argv) {
+// MARK: -- Setup Methods
 
-    // Create our memory
-    std::unique_ptr<Memory> memory(new Memory(0x1000, 0x1000));
-    
-    // Create our register bank
-    std::unique_ptr<RegisterBank> registerBank(new RegisterBank());
+/**
+ * Sets up the instruction set.
+ * @return The instruction set
+ */
+std::unique_ptr<InstructionSet> setupInstructions() {
 
     // Create our instruction set
     std::unique_ptr<InstructionSet> instrSet(new InstructionSet());
@@ -83,9 +82,89 @@ int main(int argc, char ** argv) {
     instrSet->registerPsuedoType("nop", std::unique_ptr<NopParser>(new NopParser()));
     instrSet->registerPsuedoType("subi", std::unique_ptr<SubiParser>(new SubiParser()));
 
+    return std::move(instrSet);
+}
+
+/**
+ * Sets up things such as the logger.
+ * @param debug Whether or not to be in debug mode
+ */
+void setupLogger(bool debug) {
+
+    auto consoleSink = std::shared_ptr<spdlog::sinks::stdout_color_sink_mt>(new spdlog::sinks::stdout_color_sink_mt());
+    consoleSink->set_level(debug ? spdlog::level::debug : spdlog::level::info);
+    
+    // Get the current time
+    std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::system_clock::now().time_since_epoch()
+    );
+
+    std::string file = "logs/log-" + std::to_string(ms.count()) + ".log";
+
+    std::shared_ptr<spdlog::sinks::basic_file_sink_mt> fileSink = nullptr;
+    try {
+        fileSink = std::shared_ptr<spdlog::sinks::basic_file_sink_mt>(new spdlog::sinks::basic_file_sink_mt(file));
+        fileSink->set_level(spdlog::level::trace);
+    }
+    catch (spdlog::spdlog_ex& e) {
+        std::cerr << "error: unable to open log file " << file << " for logging" << std::endl;
+    }
+
+    if (fileSink != nullptr) {    
+        spdlog::set_default_logger(std::shared_ptr<spdlog::logger>(new spdlog::logger("multi_sink", spdlog::sinks_init_list({ consoleSink, fileSink }))));
+    }
+    else {
+        spdlog::set_default_logger(std::shared_ptr<spdlog::logger>(new spdlog::logger("multi_sink", spdlog::sinks_init_list({ consoleSink }))));
+    }
+}
+
+
+// MARK: -- Entry Methods
+
+/**
+ * The entry point to the program.
+ * @param argc The arguments count
+ * @param argv The arguments list
+ */
+int main(int argc, char ** argv) {
+
+    //
+    // Usage: ./pipeSim <filename> [--debug]
+    //
+    if (argc < 2) {
+        std::cerr << "usage: ./pipeSim <filename> [--debug]" << std::endl;
+        exit(1);
+    }
+
+    // Get the filename
+    std::string filename = argv[1];
+    bool debug = false;
+
+    // Check the debug flag if we have it
+    if (argc >= 3) {
+        std::string debugFlag = argv[2];
+        debug = (debugFlag == "--debug" || debugFlag == "-d");
+    }
+
+    // Set up our logging
+    setupLogger(debug);
+    spdlog::info("test");
+
+    // Get our instruction set
+    std::unique_ptr<InstructionSet> instrSet = setupInstructions();
+
+    // Create our memory
+    std::unique_ptr<Memory> memory(new Memory(0x1000, 0x1000));
+    
+    // Create our register bank
+    std::unique_ptr<RegisterBank> registerBank(new RegisterBank());
+
     // Read our file
     FileReader reader;
-    reader.readFile("./app/test.s", *instrSet.get(), *memory.get());
+    if (!reader.readFile(filename, *instrSet.get(), *memory.get())) {
+        spdlog::critical("Unable to open file {}", filename);
+        exit(1);
+    }
 
     // Now create our simulator
     Simulator simulator(std::move(instrSet), std::move(memory), std::move(registerBank));

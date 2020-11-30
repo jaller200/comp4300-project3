@@ -9,7 +9,7 @@
  */
 namespace StringUtils {
 
-    // MARK: -- Upper / Lower Case Methods
+    // MARK: -- Case Methods
 
     /**
      * Converts the string to lower case.

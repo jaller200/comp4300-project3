@@ -1,10 +1,6 @@
 #pragma once
 
-#include <iostream>
 #include <stdexcept>
-#include <sstream>
-
-#include "types.hpp"
 
 /**
  * A basic exception for syntax errors.

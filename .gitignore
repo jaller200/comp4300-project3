@@ -1,6 +1,8 @@
 # Directories
 bin/
 build/
+log/
+logs/
 obj/
 
 # VSCode Directories
