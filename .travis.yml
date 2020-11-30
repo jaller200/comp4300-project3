@@ -8,7 +8,7 @@ dist: trusty
 # Git Information
 branches:
   only:
-    - dev
+    - master
 
 # Notification Information
 notifications:
