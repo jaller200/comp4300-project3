@@ -146,9 +146,11 @@ int main(int argc, char ** argv) {
         debug = (debugFlag == "--debug" || debugFlag == "-d");
     }
 
+    std::cout << debug << std::endl;
+
     // Set up our logging
     setupLogger(debug);
-    spdlog::info("test");
+    spdlog::debug("test");
 
     // Get our instruction set
     std::unique_ptr<InstructionSet> instrSet = setupInstructions();
